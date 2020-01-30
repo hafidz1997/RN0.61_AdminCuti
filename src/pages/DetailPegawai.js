@@ -5,7 +5,7 @@ import Button from '../components/Button';
 import Modal from 'react-native-modalbox';
 import { openDatabase } from 'react-native-sqlite-storage';
 import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
-var db = openDatabase({ name: 'deptech3.db', createFromLocation : 1});
+var db = openDatabase({ name: 'deptech4.db', createFromLocation : 1});
 
 const style = StyleSheet.create({
     modalContainer: {

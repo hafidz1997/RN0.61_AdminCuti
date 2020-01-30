@@ -6,7 +6,7 @@ import List from '../components/List';
 import Modal from 'react-native-modalbox';
 import Button from '../components/Button';
 import { openDatabase } from 'react-native-sqlite-storage';
-var db = openDatabase({ name: 'deptech3.db', createFromLocation : 1});
+var db = openDatabase({ name: 'deptech4.db', createFromLocation : 1});
 
 
 const style = StyleSheet.create({

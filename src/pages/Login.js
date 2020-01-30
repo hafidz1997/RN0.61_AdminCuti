@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Text, ScrollView, TextInput, FlatList, Alert} from 'react-native';
 import Button from '../components/Button';
 import { openDatabase } from 'react-native-sqlite-storage';
-var db = openDatabase({ name: 'deptech3.db', createFromLocation : 1});
+var db = openDatabase({ name: 'deptech4.db', createFromLocation : 1});
 import AsyncStorage from '@react-native-community/async-storage';
 
 

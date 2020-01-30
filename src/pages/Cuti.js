@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, ScrollView, TextInput, FlatList, Alert} from 'r
 import Header from '../components/Header';
 import List from '../components/List';
 import { openDatabase } from 'react-native-sqlite-storage';
-var db = openDatabase({ name: 'deptech3.db', createFromLocation : 1});
+var db = openDatabase({ name: 'deptech4.db', createFromLocation : 1});
 
 
 const style = StyleSheet.create({
