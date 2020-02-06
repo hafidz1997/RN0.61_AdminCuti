@@ -95,13 +95,13 @@ const Tab = createBottomTabNavigator(
         let IconComponent = Ionicons;
         let iconName;
         if (routeName === 'Admin') {
-          iconName = `md-contacts`;
+          iconName = 'md-contacts';
         } else if (routeName === 'Pegawai') {
-          iconName = `ios-people`;
+          iconName = 'ios-people';
         } else if (routeName === 'Cuti') {
-          iconName = `md-calendar`;
+          iconName = 'md-calendar';
         } else if (routeName === 'Profil') {
-          iconName = `md-contact`;
+          iconName = 'md-contact';
         }
 
         return <IconComponent name={iconName} size={25} color={tintColor} />;

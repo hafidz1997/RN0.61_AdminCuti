@@ -16,7 +16,7 @@ import {openDatabase} from 'react-native-sqlite-storage';
 import AddButton from '../components/AddButton';
 import List from '../components/List';
 import DatePicker from 'react-native-datepicker';
-var db = openDatabase({name: 'deptech4.db', createFromLocation: 1});
+let db = openDatabase({name: 'deptech4.db', createFromLocation: 1});
 
 const style = StyleSheet.create({
   modalContainer: {
@@ -108,7 +108,7 @@ class DetailCuti extends React.Component {
         (tx, results) => {
           let len = results.rows.length;
           if (len !== 0) {
-            var temp = [];
+            let temp = [];
             for (let i = 0; i < results.rows.length; ++i) {
               temp.push(results.rows.item(i));
             }
@@ -352,7 +352,7 @@ class DetailCuti extends React.Component {
   }
 
   tambah = () => {
-    var that = this;
+    let that = this;
     let id = this.state.idp;
     const {awal, akhir, alasan} = this.state;
     if (awal) {
@@ -380,7 +380,7 @@ class DetailCuti extends React.Component {
                       (tx, results) => {
                         let len = results.rows.length;
                         if (len > 0) {
-                          var temp = [];
+                          let temp = [];
                           for (let i = 0; i < results.rows.length; ++i) {
                             temp.push(results.rows.item(i));
                           }
@@ -428,7 +428,7 @@ class DetailCuti extends React.Component {
   };
 
   update = id => {
-    var that = this;
+    let that = this;
     const {awal, akhir, alasan} = this.state;
     // console.warn(depan);
     if (awal) {
@@ -456,7 +456,7 @@ class DetailCuti extends React.Component {
                       (tx, results) => {
                         let len = results.rows.length;
                         if (len > 0) {
-                          var temp = [];
+                          let temp = [];
                           for (let i = 0; i < results.rows.length; ++i) {
                             temp.push(results.rows.item(i));
                           }
@@ -513,7 +513,7 @@ class DetailCuti extends React.Component {
   };
 
   deletecuti = id => {
-    var that = this;
+    let that = this;
     // console.warn(id);
     db.transaction(tx => {
       tx.executeSql('DELETE FROM cuti where id=?', [id], (tx, results) => {
@@ -534,7 +534,7 @@ class DetailCuti extends React.Component {
               (tx, results) => {
                 let len = results.rows.length;
                 if (len > 0) {
-                  var temp = [];
+                  let temp = [];
                   for (let i = 0; i < results.rows.length; ++i) {
                     temp.push(results.rows.item(i));
                   }

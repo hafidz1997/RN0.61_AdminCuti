@@ -16,7 +16,7 @@ import RadioForm, {
   RadioButtonInput,
   RadioButtonLabel,
 } from 'react-native-simple-radio-button';
-var db = openDatabase({name: 'deptech4.db', createFromLocation: 1});
+let db = openDatabase({name: 'deptech4.db', createFromLocation: 1});
 
 const style = StyleSheet.create({
   modalContainer: {
@@ -89,7 +89,7 @@ class DetailPegawai extends React.Component {
         'SELECT * FROM pegawai where id = ?',
         [id],
         (tx, results) => {
-          var len = results.rows.length;
+          let len = results.rows.length;
           console.log('len', len);
           if (len > 0) {
             this.setState({
@@ -193,6 +193,7 @@ class DetailPegawai extends React.Component {
               style={style.input}
               value={this.state.email}
               onChangeText={email => this.setState({email})}
+              keyboardType="email-address"
             />
             <Text style={style.label}>No HP</Text>
             <TextInput
@@ -200,6 +201,7 @@ class DetailPegawai extends React.Component {
               style={style.input}
               value={this.state.no}
               onChangeText={no => this.setState({no})}
+              keyboardType="phone-pad"
             />
             <Text style={style.label}>Alamat</Text>
             <TextInput
@@ -241,7 +243,7 @@ class DetailPegawai extends React.Component {
   }
 
   update = () => {
-    var that = this;
+    let that = this;
     let id = this.props.navigation.getParam('id', 0);
     const {depan, belakang, email, no, alamat, jk} = this.state;
     // console.warn(depan);
@@ -262,7 +264,7 @@ class DetailPegawai extends React.Component {
                           'SELECT * FROM pegawai where id = ?',
                           [id],
                           (tx, results) => {
-                            var len = results.rows.length;
+                            let len = results.rows.length;
                             console.log('len', len);
                             if (len > 0) {
                               this.setState({
@@ -335,7 +337,7 @@ class DetailPegawai extends React.Component {
   }
 
   deletepegawai = () => {
-    var that = this;
+    let that = this;
     let id = this.props.navigation.getParam('id', 0);
     db.transaction(tx => {
       tx.executeSql('DELETE FROM pegawai where id=?', [id], (tx, results) => {

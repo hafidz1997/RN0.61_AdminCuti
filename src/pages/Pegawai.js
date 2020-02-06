@@ -19,7 +19,7 @@ import RadioForm, {
   RadioButtonLabel,
 } from 'react-native-simple-radio-button';
 import {openDatabase} from 'react-native-sqlite-storage';
-var db = openDatabase({name: 'deptech4.db', createFromLocation: 1});
+let db = openDatabase({name: 'deptech4.db', createFromLocation: 1});
 
 const style = StyleSheet.create({
   container: {
@@ -79,7 +79,7 @@ class Pegawai extends React.Component {
     };
     db.transaction(tx => {
       tx.executeSql('SELECT * FROM pegawai', [], (tx, results) => {
-        var temp = [];
+        let temp = [];
         for (let i = 0; i < results.rows.length; ++i) {
           temp.push(results.rows.item(i));
         }
@@ -95,7 +95,7 @@ class Pegawai extends React.Component {
     this.focusListener = navigation.addListener('didFocus', () => {
       db.transaction(tx => {
         tx.executeSql('SELECT * FROM pegawai', [], (tx, results) => {
-          var temp = [];
+          let temp = [];
           for (let i = 0; i < results.rows.length; ++i) {
             temp.push(results.rows.item(i));
           }
@@ -112,7 +112,7 @@ class Pegawai extends React.Component {
   }
 
   tambah = () => {
-    var that = this;
+    let that = this;
     const {depan, belakang, email, no, alamat, jk} = this.state;
     console.warn(alamat);
     if (depan) {
@@ -131,7 +131,7 @@ class Pegawai extends React.Component {
                           'SELECT * FROM pegawai',
                           [],
                           (tx, results) => {
-                            var temp = [];
+                            let temp = [];
                             for (let i = 0; i < results.rows.length; ++i) {
                               temp.push(results.rows.item(i));
                             }
@@ -230,12 +230,14 @@ class Pegawai extends React.Component {
                 placeholder="Masukkan Email"
                 style={style.input}
                 onChangeText={email => this.setState({email})}
+                keyboardType="email-address"
               />
               <Text style={style.label}>No HP</Text>
               <TextInput
                 placeholder="Masukkan Nomor HP"
                 style={style.input}
                 onChangeText={no => this.setState({no})}
+                keyboardType="phone-pad"
               />
               <Text style={style.label}>Alamat</Text>
               <TextInput

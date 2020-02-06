@@ -14,7 +14,7 @@ import List from '../components/List';
 import Modal from 'react-native-modalbox';
 import Button from '../components/Button';
 import {openDatabase} from 'react-native-sqlite-storage';
-var db = openDatabase({name: 'deptech4.db', createFromLocation: 1});
+let db = openDatabase({name: 'deptech4.db', createFromLocation: 1});
 
 const style = StyleSheet.create({
   container: {
@@ -64,7 +64,7 @@ class Admin extends React.Component {
     };
     db.transaction(tx => {
       tx.executeSql('SELECT * FROM admin', [], (tx, results) => {
-        var temp = [];
+        let temp = [];
         for (let i = 0; i < results.rows.length; ++i) {
           temp.push(results.rows.item(i));
         }
@@ -80,7 +80,7 @@ class Admin extends React.Component {
     this.focusListener = navigation.addListener('didFocus', () => {
       db.transaction(tx => {
         tx.executeSql('SELECT * FROM admin', [], (tx, results) => {
-          var temp = [];
+          let temp = [];
           for (let i = 0; i < results.rows.length; ++i) {
             temp.push(results.rows.item(i));
           }
@@ -97,7 +97,7 @@ class Admin extends React.Component {
   }
 
   tambah = () => {
-    var that = this;
+    let that = this;
     const {depan, belakang, email, password} = this.state;
     //alert(depan, belakang, email, password);
     if (depan) {
@@ -111,7 +111,7 @@ class Admin extends React.Component {
                 (tx, results) => {
                   if (results.rowsAffected > 0) {
                     tx.executeSql('SELECT * FROM admin', [], (tx, results) => {
-                      var temp = [];
+                      let temp = [];
                       for (let i = 0; i < results.rows.length; ++i) {
                         temp.push(results.rows.item(i));
                       }

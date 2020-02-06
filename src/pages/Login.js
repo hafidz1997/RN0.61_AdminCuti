@@ -1,29 +1,22 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  ScrollView,
-  TextInput,
-  FlatList,
-  Alert,
-} from 'react-native';
+import {StyleSheet, Text, TextInput, Alert, View} from 'react-native';
 import Button from '../components/Button';
 import {openDatabase} from 'react-native-sqlite-storage';
-var db = openDatabase({name: 'deptech4.db', createFromLocation: 1});
+let db = openDatabase({name: 'deptech4.db', createFromLocation: 1});
 import AsyncStorage from '@react-native-community/async-storage';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const style = StyleSheet.create({
   container: {
     flex: 1,
   },
-  modalContainer: {
-    // justifyContent: 'center',
-    borderRadius: 8,
-    shadowRadius: 10,
-    width: '90%',
-    height: 300,
-    padding: 10,
+  icon: {
+    width: 25,
+    justifyContent: 'center',
+    alignContent: 'center',
+    lineHeight: 50,
+    height: 50,
+    marginTop: 20,
   },
   judul: {
     fontSize: 25,
@@ -40,6 +33,7 @@ const style = StyleSheet.create({
     borderColor: 'grey',
     borderWidth: 1,
     margin: 20,
+    width: '85%',
   },
   kosong: {
     fontSize: 20,
@@ -55,11 +49,20 @@ class Login extends React.Component {
     this.state = {
       email: '',
       password: '',
+      icon: 'md-eye-off',
+      pass: true,
     };
   }
 
+  showpass() {
+    this.setState(prevState => ({
+      icon: prevState.icon === 'md-eye' ? 'md-eye-off' : 'md-eye',
+      pass: !prevState.pass,
+    }));
+  }
+
   login = () => {
-    var that = this;
+    let that = this;
     const {email, password} = this.state;
     if (email) {
       if (password) {
@@ -67,7 +70,7 @@ class Login extends React.Component {
           tx.executeSql(
             'SELECT * FROM admin WHERE email = ? AND password = ?',
             [email, password],
-            (tx, results) => {
+            results => {
               if (results.rows.length > 0) {
                 AsyncStorage.setItem('isLoggedIn', '1');
                 AsyncStorage.setItem(
@@ -107,17 +110,25 @@ class Login extends React.Component {
         <TextInput
           placeholder="Masukkan Email"
           style={style.input}
-          // value={this.state.title}
           onChangeText={email => this.setState({email})}
+          keyboardType="email-address"
         />
         <Text style={style.label}>Password</Text>
-        <TextInput
-          secureTextEntry={true}
-          placeholder="Masukkan Password"
-          style={style.input}
-          // value={this.state.title}
-          onChangeText={password => this.setState({password})}
-        />
+        <View style={{flexDirection: 'row'}}>
+          <TextInput
+            secureTextEntry={this.state.pass}
+            placeholder="Masukkan Password"
+            style={style.input}
+            onChangeText={password => this.setState({password})}
+          />
+          <Icon
+            name={this.state.icon}
+            onPress={() => this.showpass()}
+            size={25}
+            color="black"
+            style={style.icon}
+          />
+        </View>
         <Button
           title="Login"
           color="#779DCA"
@@ -126,10 +137,6 @@ class Login extends React.Component {
         />
       </>
     );
-  }
-
-  openModal() {
-    this.refs.Modal.open();
   }
 }
 

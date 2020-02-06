@@ -11,7 +11,7 @@ import HeaderDetail from '../components/HeaderDetail';
 import Button from '../components/Button';
 import Modal from 'react-native-modalbox';
 import {openDatabase} from 'react-native-sqlite-storage';
-var db = openDatabase({name: 'deptech4.db', createFromLocation: 1});
+let db = openDatabase({name: 'deptech4.db', createFromLocation: 1});
 
 const style = StyleSheet.create({
   modalContainer: {
@@ -70,7 +70,7 @@ class DetailAdmin extends React.Component {
     // console.warn(id);
     db.transaction(tx => {
       tx.executeSql('SELECT * FROM admin where id = ?', [id], (tx, results) => {
-        var len = results.rows.length;
+        let len = results.rows.length;
         console.log('len', len);
         if (len > 0) {
           this.setState({
@@ -169,7 +169,7 @@ class DetailAdmin extends React.Component {
   }
 
   update = () => {
-    var that = this;
+    let that = this;
     let id = this.props.navigation.getParam('id', 0);
     const {depan, belakang, email} = this.state;
     // console.warn(depan);
@@ -187,7 +187,7 @@ class DetailAdmin extends React.Component {
                     'SELECT * FROM admin where id = ?',
                     [id],
                     (tx, results) => {
-                      var len = results.rows.length;
+                      let len = results.rows.length;
                       console.log('len', len);
                       if (len > 0) {
                         this.setState({
@@ -246,7 +246,7 @@ class DetailAdmin extends React.Component {
   }
 
   deleteAdmin = () => {
-    var that = this;
+    let that = this;
     let id = this.props.navigation.getParam('id', 0);
     db.transaction(tx => {
       tx.executeSql('DELETE FROM admin where id=?', [id], (tx, results) => {
