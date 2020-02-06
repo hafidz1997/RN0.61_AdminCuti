@@ -264,8 +264,8 @@ class DetailAdmin extends React.Component {
 
   hapus() {
     Alert.alert('Hapus Admin', 'Apakah anda yakin akan menghapus admin?', [
-      {text: 'NO'},
-      {text: 'YES', onPress: this.deleteAdmin},
+      {text: 'Tidak'},
+      {text: 'Iya', onPress: this.deleteAdmin},
     ]);
   }
 

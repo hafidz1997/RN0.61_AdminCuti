@@ -5,6 +5,7 @@ import DetailAdmin from './DetailAdmin';
 import TambahAdmin from './TambahAdmin';
 import Pegawai from './Pegawai';
 import DetailPegawai from './DetailPegawai';
+import TambahPegawai from './TambahPegawai';
 import Cuti from './Cuti';
 import DetailCuti from './DetailCuti';
 import Profil from './Profil';
@@ -17,6 +18,7 @@ export {
   TambahAdmin,
   Pegawai,
   DetailPegawai,
+  TambahPegawai,
   Cuti,
   DetailCuti,
   Profil,

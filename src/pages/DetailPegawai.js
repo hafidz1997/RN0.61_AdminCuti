@@ -362,8 +362,8 @@ class DetailPegawai extends React.Component {
 
   hapus() {
     Alert.alert('Hapus pegawai', 'Apakah anda yakin akan menghapus pegawai?', [
-      {text: 'NO'},
-      {text: 'YES', onPress: this.deletepegawai},
+      {text: 'Tidak'},
+      {text: 'Iya', onPress: this.deletepegawai},
     ]);
   }
 

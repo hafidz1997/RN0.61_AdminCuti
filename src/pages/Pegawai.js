@@ -1,23 +1,8 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  ScrollView,
-  TextInput,
-  FlatList,
-  ToastAndroid,
-} from 'react-native';
+import {StyleSheet, View, Text, FlatList} from 'react-native';
 import Header from '../components/Header';
 import AddButton from '../components/AddButton';
 import List from '../components/List';
-import Modal from 'react-native-modalbox';
-import Button from '../components/Button';
-import RadioForm, {
-  RadioButton,
-  RadioButtonInput,
-  RadioButtonLabel,
-} from 'react-native-simple-radio-button';
 import {openDatabase} from 'react-native-sqlite-storage';
 let db = openDatabase({name: 'deptech4.db', createFromLocation: 1});
 
@@ -59,11 +44,6 @@ const style = StyleSheet.create({
     marginTop: '50%',
   },
 });
-
-let radio_props = [
-  {label: 'Pria', value: 'Pria'},
-  {label: 'Wanita', value: 'Wanita'},
-];
 
 class Pegawai extends React.Component {
   constructor(props) {
@@ -111,95 +91,6 @@ class Pegawai extends React.Component {
     this.focusListener.remove();
   }
 
-  tambah = () => {
-    let that = this;
-    const {depan, belakang, email, no, alamat, jk} = this.state;
-    console.warn(alamat);
-    if (depan) {
-      if (belakang) {
-        if (email) {
-          if (no) {
-            if (alamat) {
-              if (jk) {
-                db.transaction(tx => {
-                  tx.executeSql(
-                    'INSERT INTO pegawai (depan, belakang, email, no, alamat, jk) VALUES (?,?,?,?,?,?)',
-                    [depan, belakang, email, no, alamat, jk],
-                    (tx, results) => {
-                      if (results.rowsAffected > 0) {
-                        tx.executeSql(
-                          'SELECT * FROM pegawai',
-                          [],
-                          (tx, results) => {
-                            let temp = [];
-                            for (let i = 0; i < results.rows.length; ++i) {
-                              temp.push(results.rows.item(i));
-                            }
-                            this.setState({
-                              pegawai: temp,
-                            });
-                          },
-                        );
-                        ToastAndroid.showWithGravity(
-                          'Pegawai berhasil ditambahkan',
-                          ToastAndroid.LONG,
-                          ToastAndroid.CENTER,
-                        );
-                        that.refs.Modal.close();
-                      } else {
-                        ToastAndroid.showWithGravity(
-                          'Gagal',
-                          ToastAndroid.LONG,
-                          ToastAndroid.CENTER,
-                        );
-                      }
-                    },
-                  );
-                });
-              } else {
-                ToastAndroid.showWithGravity(
-                  'Jenis Kelamin belum diisi',
-                  ToastAndroid.LONG,
-                  ToastAndroid.CENTER,
-                );
-              }
-            } else {
-              ToastAndroid.showWithGravity(
-                'Alamat belum diisi',
-                ToastAndroid.LONG,
-                ToastAndroid.CENTER,
-              );
-            }
-          } else {
-            ToastAndroid.showWithGravity(
-              'Nomor HP belum diisi',
-              ToastAndroid.LONG,
-              ToastAndroid.CENTER,
-            );
-          }
-        } else {
-          ToastAndroid.showWithGravity(
-            'Email belum diisi',
-            ToastAndroid.LONG,
-            ToastAndroid.CENTER,
-          );
-        }
-      } else {
-        ToastAndroid.showWithGravity(
-          'Nama Belakang belum diisi',
-          ToastAndroid.LONG,
-          ToastAndroid.CENTER,
-        );
-      }
-    } else {
-      ToastAndroid.showWithGravity(
-        'Nama Depan belum diisi',
-        ToastAndroid.LONG,
-        ToastAndroid.CENTER,
-      );
-    }
-  };
-
   render() {
     let tampilan;
     if (this.state.pegawai.length != 0) {
@@ -227,81 +118,12 @@ class Pegawai extends React.Component {
         <Header title="List Pegawai" />
         <View style={{flex: 1}}>
           {tampilan}
-          <AddButton onPress={this.openModal.bind(this)} />
-          <Modal
-            ref={'Modal'}
-            style={style.modalContainer}
-            position="center"
-            backdrop={true}
-            swipeToClose={false}>
-            <ScrollView>
-              <Text style={style.judul}>Tambah Pegawai</Text>
-              <Text style={style.label}>Nama Depan</Text>
-              <TextInput
-                placeholder="Masukkan Nama Depan"
-                style={style.input}
-                onChangeText={depan => this.setState({depan})}
-              />
-              <Text style={style.label}>Nama Belakang</Text>
-              <TextInput
-                placeholder="Masukkan Nama Belakang"
-                style={style.input}
-                onChangeText={belakang => this.setState({belakang})}
-              />
-              <Text style={style.label}>Email</Text>
-              <TextInput
-                placeholder="Masukkan Email"
-                style={style.input}
-                onChangeText={email => this.setState({email})}
-                keyboardType="email-address"
-              />
-              <Text style={style.label}>No HP</Text>
-              <TextInput
-                placeholder="Masukkan Nomor HP"
-                style={style.input}
-                onChangeText={no => this.setState({no})}
-                keyboardType="phone-pad"
-              />
-              <Text style={style.label}>Alamat</Text>
-              <TextInput
-                multiline={true}
-                numberOfLines={4}
-                placeholder="Masukkan Alamat"
-                style={style.input}
-                onChangeText={alamat => this.setState({alamat})}
-              />
-              <Text style={style.label}>Jenis Kelamin</Text>
-              <RadioForm
-                style={style.radio}
-                radio_props={radio_props}
-                initial={''}
-                onPress={value => {
-                  this.setState({jk: value});
-                }}
-                labelHorizontal={true}
-                selectedButtonColor={'#779DCA'}
-                buttonColor={'#779DCA'}
-                selectedLabelColor={'#779DCA'}
-                labelColor={'#779DCA'}
-                // formHorizontal={true}
-                buttonSize={15}
-                buttonStyle={{marginLeft: 10}}
-              />
-              <Button
-                title="Simpan"
-                color="#779DCA"
-                icon="ios-create"
-                onPress={this.tambah.bind(this)}
-              />
-            </ScrollView>
-          </Modal>
+          <AddButton
+            onPress={() => this.props.navigation.navigate('TambahPegawai')}
+          />
         </View>
       </>
     );
-  }
-
-  openModal() {
-    this.refs.Modal.open();
   }
 }
 

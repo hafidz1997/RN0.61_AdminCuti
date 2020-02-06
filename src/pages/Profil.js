@@ -71,9 +71,9 @@ class Profil extends React.Component {
 
   logout() {
     Alert.alert('Logout', 'Apakah anda yakin akan logout?', [
-      {text: 'NO'},
+      {text: 'Tidak'},
       {
-        text: 'YES',
+        text: 'Iya',
         onPress: () => {
           AsyncStorage.clear();
           this.props.navigation.navigate('Login');

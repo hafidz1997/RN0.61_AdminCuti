@@ -539,8 +539,8 @@ class DetailCuti extends React.Component {
 
   hapus = id => {
     Alert.alert('Hapus Cuti', 'Apakah anda yakin akan menghapus Cuti?', [
-      {text: 'NO'},
-      {text: 'YES', onPress: () => this.deletecuti(id)},
+      {text: 'Tidak'},
+      {text: 'Iya', onPress: () => this.deletecuti(id)},
     ]);
   };
 
