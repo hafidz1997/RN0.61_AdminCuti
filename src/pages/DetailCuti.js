@@ -8,6 +8,7 @@ import {
   TextInput,
   Alert,
   FlatList,
+  ToastAndroid,
 } from 'react-native';
 import HeaderDetail from '../components/HeaderDetail';
 import Button from '../components/Button';
@@ -138,7 +139,11 @@ class DetailCuti extends React.Component {
                       idp: results.rows.item(0).id,
                     });
                   } else {
-                    alert('No user found');
+                    ToastAndroid.showWithGravity(
+                      'No user found',
+                      ToastAndroid.LONG,
+                      ToastAndroid.CENTER,
+                    );
                     this.setState({
                       cuti: '',
                     });
@@ -399,31 +404,42 @@ class DetailCuti extends React.Component {
                       },
                     );
                   });
-                  Alert.alert(
-                    'Berhasil',
+                  ToastAndroid.showWithGravity(
                     'Cuti berhasil ditambahkan',
-                    [
-                      {
-                        text: 'Ok',
-                        onPress: () => that.refs.Tambah.close(),
-                      },
-                    ],
-                    {cancelable: false},
+                    ToastAndroid.LONG,
+                    ToastAndroid.CENTER,
                   );
+                  that.refs.Tambah.close();
                 } else {
-                  alert('Gagal');
+                  ToastAndroid.showWithGravity(
+                    'Gagal',
+                    ToastAndroid.LONG,
+                    ToastAndroid.CENTER,
+                  );
                 }
               },
             );
           });
         } else {
-          alert('Alasan Cuti belum diisi');
+          ToastAndroid.showWithGravity(
+            'Alasan Cuti belum diisi',
+            ToastAndroid.LONG,
+            ToastAndroid.CENTER,
+          );
         }
       } else {
-        alert('Tanggal Mulai belum diisi');
+        ToastAndroid.showWithGravity(
+          'Tanggal Mulai belum diisi',
+          ToastAndroid.LONG,
+          ToastAndroid.CENTER,
+        );
       }
     } else {
-      alert('Tanggal Berakhir belum diisi');
+      ToastAndroid.showWithGravity(
+        'Tanggal Berakhir belum diisi',
+        ToastAndroid.LONG,
+        ToastAndroid.CENTER,
+      );
     }
   };
 
@@ -475,26 +491,42 @@ class DetailCuti extends React.Component {
                       },
                     );
                   });
-                  Alert.alert(
-                    'Berhasil',
-                    'cuti berhasil di update',
-                    [{text: 'Ok', onPress: () => that.refs.Update.close()}],
-                    {cancelable: false},
+                  ToastAndroid.showWithGravity(
+                    'Cuti berhasil di update',
+                    ToastAndroid.LONG,
+                    ToastAndroid.CENTER,
                   );
+                  that.refs.Update.close();
                 } else {
-                  alert('Update gagal');
+                  ToastAndroid.showWithGravity(
+                    'Update gagal',
+                    ToastAndroid.LONG,
+                    ToastAndroid.CENTER,
+                  );
                 }
               },
             );
           });
         } else {
-          alert('Alasan belum diisi');
+          ToastAndroid.showWithGravity(
+            'Alasan belum diisi',
+            ToastAndroid.LONG,
+            ToastAndroid.CENTER,
+          );
         }
       } else {
-        alert('Tanggal Mulai belum diisi');
+        ToastAndroid.showWithGravity(
+          'Tanggal Mulai belum diisi',
+          ToastAndroid.LONG,
+          ToastAndroid.CENTER,
+        );
       }
     } else {
-      alert('Tanggal Berakhir belum diisi');
+      ToastAndroid.showWithGravity(
+        'Tanggal Berakhir belum diisi',
+        ToastAndroid.LONG,
+        ToastAndroid.CENTER,
+      );
     }
   };
 
@@ -507,7 +539,7 @@ class DetailCuti extends React.Component {
 
   hapus = id => {
     Alert.alert('Hapus Cuti', 'Apakah anda yakin akan menghapus Cuti?', [
-      {text: 'NO', onPress: () => console.warn('NO Pressed'), style: 'cancel'},
+      {text: 'NO'},
       {text: 'YES', onPress: () => this.deletecuti(id)},
     ]);
   };
@@ -553,19 +585,18 @@ class DetailCuti extends React.Component {
               },
             );
           });
-          Alert.alert(
-            'Berhasil',
-            'cuti berhasil dihapus',
-            [
-              {
-                text: 'Ok',
-                onPress: () => that.props.navigation.navigate('pegawai'),
-              },
-            ],
-            {cancelable: false},
+          ToastAndroid.showWithGravity(
+            'Cuti berhasil dihapus',
+            ToastAndroid.LONG,
+            ToastAndroid.CENTER,
           );
+          that.props.navigation.navigate('pegawai');
         } else {
-          alert('Gagal');
+          ToastAndroid.showWithGravity(
+            'Gagal',
+            ToastAndroid.LONG,
+            ToastAndroid.CENTER,
+          );
         }
       });
     });

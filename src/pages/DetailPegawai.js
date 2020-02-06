@@ -6,6 +6,7 @@ import {
   ScrollView,
   TextInput,
   Alert,
+  ToastAndroid,
 } from 'react-native';
 import HeaderDetail from '../components/HeaderDetail';
 import Button from '../components/Button';
@@ -114,7 +115,11 @@ class DetailPegawai extends React.Component {
               jk: results.rows.item(0).jk,
             });
           } else {
-            alert('No user found');
+            ToastAndroid.showWithGravity(
+              'No user found',
+              ToastAndroid.LONG,
+              ToastAndroid.CENTER,
+            );
             this.setState({
               pegawai: '',
             });
@@ -280,48 +285,74 @@ class DetailPegawai extends React.Component {
                                 email: results.rows.item(0).email,
                               });
                             } else {
-                              alert('No user found');
+                              ToastAndroid.showWithGravity(
+                                'No user found',
+                                ToastAndroid.LONG,
+                                ToastAndroid.CENTER,
+                              );
                               this.setState({
                                 pegawai: '',
                               });
                             }
                           },
                         );
-
-                        Alert.alert(
-                          'Berhasil',
-                          'pegawai berhasil di update',
-                          [
-                            {
-                              text: 'Ok',
-                              onPress: () => that.refs.Modal.close(),
-                            },
-                          ],
-                          {cancelable: false},
+                        ToastAndroid.showWithGravity(
+                          'Pegawai berhasil di update',
+                          ToastAndroid.LONG,
+                          ToastAndroid.CENTER,
                         );
+                        that.refs.Modal.close();
                       } else {
-                        alert('Update gagal');
+                        ToastAndroid.showWithGravity(
+                          'Update gagal',
+                          ToastAndroid.LONG,
+                          ToastAndroid.CENTER,
+                        );
                       }
                     },
                   );
                 });
               } else {
-                alert('Jenis Kelamin belum diisi');
+                ToastAndroid.showWithGravity(
+                  'Jenis Kelamin belum diisi',
+                  ToastAndroid.LONG,
+                  ToastAndroid.CENTER,
+                );
               }
             } else {
-              alert('Alamat belum diisi');
+              ToastAndroid.showWithGravity(
+                'Alamat belum diisi',
+                ToastAndroid.LONG,
+                ToastAndroid.CENTER,
+              );
             }
           } else {
-            alert('No Hp belum diisi');
+            ToastAndroid.showWithGravity(
+              'No Hp belum diisi',
+              ToastAndroid.LONG,
+              ToastAndroid.CENTER,
+            );
           }
         } else {
-          alert('Email belum diisi');
+          ToastAndroid.showWithGravity(
+            'Email belum diisi',
+            ToastAndroid.LONG,
+            ToastAndroid.CENTER,
+          );
         }
       } else {
-        alert('Nama Depan belum diisi');
+        ToastAndroid.showWithGravity(
+          'Nama Depan belum diisi',
+          ToastAndroid.LONG,
+          ToastAndroid.CENTER,
+        );
       }
     } else {
-      alert('Nama Belakang belum diisi');
+      ToastAndroid.showWithGravity(
+        'Nama Belakang belum diisi',
+        ToastAndroid.LONG,
+        ToastAndroid.CENTER,
+      );
     }
   };
 
@@ -331,7 +362,7 @@ class DetailPegawai extends React.Component {
 
   hapus() {
     Alert.alert('Hapus pegawai', 'Apakah anda yakin akan menghapus pegawai?', [
-      {text: 'NO', onPress: () => console.warn('NO Pressed'), style: 'cancel'},
+      {text: 'NO'},
       {text: 'YES', onPress: this.deletepegawai},
     ]);
   }
@@ -342,19 +373,18 @@ class DetailPegawai extends React.Component {
     db.transaction(tx => {
       tx.executeSql('DELETE FROM pegawai where id=?', [id], (tx, results) => {
         if (results.rowsAffected > 0) {
-          Alert.alert(
-            'Berhasil',
+          ToastAndroid.showWithGravity(
             'Pegawai berhasil dihapus',
-            [
-              {
-                text: 'Ok',
-                onPress: () => that.props.navigation.navigate('Pegawai'),
-              },
-            ],
-            {cancelable: false},
+            ToastAndroid.LONG,
+            ToastAndroid.CENTER,
           );
+          that.props.navigation.navigate('Pegawai');
         } else {
-          alert('Gagal');
+          ToastAndroid.showWithGravity(
+            'Gagal',
+            ToastAndroid.LONG,
+            ToastAndroid.CENTER,
+          );
         }
       });
     });

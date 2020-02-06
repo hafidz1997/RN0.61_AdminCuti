@@ -6,6 +6,7 @@ import {
   ScrollView,
   TextInput,
   Alert,
+  ToastAndroid,
 } from 'react-native';
 import HeaderDetail from '../components/HeaderDetail';
 import Button from '../components/Button';
@@ -86,7 +87,11 @@ class DetailAdmin extends React.Component {
             email: results.rows.item(0).email,
           });
         } else {
-          alert('No user found');
+          ToastAndroid.showWithGravity(
+            'No user found',
+            ToastAndroid.LONG,
+            ToastAndroid.CENTER,
+          );
           this.setState({
             admin: '',
           });
@@ -155,6 +160,7 @@ class DetailAdmin extends React.Component {
               style={style.input}
               value={this.state.email}
               onChangeText={email => this.setState({email})}
+              keyboardType="email-address"
             />
             <Button
               title="Update"
@@ -181,7 +187,6 @@ class DetailAdmin extends React.Component {
               'UPDATE admin set depan=?, belakang=?, email=? where id=?',
               [depan, belakang, email, id],
               (tx, results) => {
-                // console.warn('Results',results.rowsAffected);
                 if (results.rowsAffected > 0) {
                   tx.executeSql(
                     'SELECT * FROM admin where id = ?',
@@ -203,34 +208,53 @@ class DetailAdmin extends React.Component {
                           email: results.rows.item(0).email,
                         });
                       } else {
-                        alert('No user found');
+                        ToastAndroid.showWithGravity(
+                          'No user found',
+                          ToastAndroid.LONG,
+                          ToastAndroid.CENTER,
+                        );
                         this.setState({
                           admin: '',
                         });
                       }
                     },
                   );
-
-                  Alert.alert(
-                    'Berhasil',
+                  ToastAndroid.showWithGravity(
                     'Admin berhasil di update',
-                    [{text: 'Ok', onPress: () => that.refs.Modal.close()}],
-                    {cancelable: false},
+                    ToastAndroid.LONG,
+                    ToastAndroid.CENTER,
                   );
+                  that.refs.Modal.close();
                 } else {
-                  alert('Update gagal');
+                  ToastAndroid.showWithGravity(
+                    'Update gagal',
+                    ToastAndroid.LONG,
+                    ToastAndroid.CENTER,
+                  );
                 }
               },
             );
           });
         } else {
-          alert('Email belum diisi');
+          ToastAndroid.showWithGravity(
+            'Email belum diisi',
+            ToastAndroid.LONG,
+            ToastAndroid.CENTER,
+          );
         }
       } else {
-        alert('Nama Depan belum diisi');
+        ToastAndroid.showWithGravity(
+          'Nama Depan belum diisi',
+          ToastAndroid.LONG,
+          ToastAndroid.CENTER,
+        );
       }
     } else {
-      alert('Nama Belakang belum diisi');
+      ToastAndroid.showWithGravity(
+        'Nama Belakang belum diisi',
+        ToastAndroid.LONG,
+        ToastAndroid.CENTER,
+      );
     }
   };
 
@@ -240,7 +264,7 @@ class DetailAdmin extends React.Component {
 
   hapus() {
     Alert.alert('Hapus Admin', 'Apakah anda yakin akan menghapus admin?', [
-      {text: 'NO', onPress: () => console.warn('NO Pressed'), style: 'cancel'},
+      {text: 'NO'},
       {text: 'YES', onPress: this.deleteAdmin},
     ]);
   }
@@ -251,19 +275,18 @@ class DetailAdmin extends React.Component {
     db.transaction(tx => {
       tx.executeSql('DELETE FROM admin where id=?', [id], (tx, results) => {
         if (results.rowsAffected > 0) {
-          Alert.alert(
-            'Berhasil',
+          ToastAndroid.showWithGravity(
             'Admin berhasil dihapus',
-            [
-              {
-                text: 'Ok',
-                onPress: () => that.props.navigation.navigate('Admin'),
-              },
-            ],
-            {cancelable: false},
+            ToastAndroid.LONG,
+            ToastAndroid.CENTER,
           );
+          that.props.navigation.navigate('Admin');
         } else {
-          alert('Please insert a valid User Id');
+          ToastAndroid.showWithGravity(
+            'Hapus gagal',
+            ToastAndroid.LONG,
+            ToastAndroid.CENTER,
+          );
         }
       });
     });

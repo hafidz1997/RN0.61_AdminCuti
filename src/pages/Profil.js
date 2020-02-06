@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  ScrollView,
-  TextInput,
-  Alert,
-} from 'react-native';
+import {StyleSheet, View, Text, ScrollView, Alert} from 'react-native';
 import Header from '../components/Header';
 import Button from '../components/Button';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -78,7 +71,7 @@ class Profil extends React.Component {
 
   logout() {
     Alert.alert('Logout', 'Apakah anda yakin akan logout?', [
-      {text: 'NO', onPress: () => console.log('NO Pressed'), style: 'cancel'},
+      {text: 'NO'},
       {
         text: 'YES',
         onPress: () => {

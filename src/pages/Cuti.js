@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  ScrollView,
-  TextInput,
-  FlatList,
-  Alert,
-} from 'react-native';
+import {StyleSheet, View, Text, FlatList} from 'react-native';
 import Header from '../components/Header';
 import List from '../components/List';
 import {openDatabase} from 'react-native-sqlite-storage';
@@ -109,7 +101,7 @@ class Cuti extends React.Component {
 
   render() {
     let tampilan;
-    if (this.state.pegawai.length != 0) {
+    if (this.state.pegawai.length !== 0) {
       tampilan = (
         <FlatList
           data={this.state.pegawai}

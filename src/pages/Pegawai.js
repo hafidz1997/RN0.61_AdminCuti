@@ -6,7 +6,7 @@ import {
   ScrollView,
   TextInput,
   FlatList,
-  Alert,
+  ToastAndroid,
 } from 'react-native';
 import Header from '../components/Header';
 import AddButton from '../components/AddButton';
@@ -140,40 +140,63 @@ class Pegawai extends React.Component {
                             });
                           },
                         );
-                        Alert.alert(
-                          'Berhasil',
-                          'pegawai berhasil ditambahkan',
-                          [
-                            {
-                              text: 'Ok',
-                              onPress: () => that.refs.Modal.close(),
-                            },
-                          ],
-                          {cancelable: false},
+                        ToastAndroid.showWithGravity(
+                          'Pegawai berhasil ditambahkan',
+                          ToastAndroid.LONG,
+                          ToastAndroid.CENTER,
                         );
+                        that.refs.Modal.close();
                       } else {
-                        alert('Gagal');
+                        ToastAndroid.showWithGravity(
+                          'Gagal',
+                          ToastAndroid.LONG,
+                          ToastAndroid.CENTER,
+                        );
                       }
                     },
                   );
                 });
               } else {
-                alert('Jenis Kelamin belum diisi');
+                ToastAndroid.showWithGravity(
+                  'Jenis Kelamin belum diisi',
+                  ToastAndroid.LONG,
+                  ToastAndroid.CENTER,
+                );
               }
             } else {
-              alert('Alamat belum diisi');
+              ToastAndroid.showWithGravity(
+                'Alamat belum diisi',
+                ToastAndroid.LONG,
+                ToastAndroid.CENTER,
+              );
             }
           } else {
-            alert('Nomor HP belum diisi');
+            ToastAndroid.showWithGravity(
+              'Nomor HP belum diisi',
+              ToastAndroid.LONG,
+              ToastAndroid.CENTER,
+            );
           }
         } else {
-          alert('Email belum diisi');
+          ToastAndroid.showWithGravity(
+            'Email belum diisi',
+            ToastAndroid.LONG,
+            ToastAndroid.CENTER,
+          );
         }
       } else {
-        alert('Nama Belakang belum diisi');
+        ToastAndroid.showWithGravity(
+          'Nama Belakang belum diisi',
+          ToastAndroid.LONG,
+          ToastAndroid.CENTER,
+        );
       }
     } else {
-      alert('Nama Depan belum diisi');
+      ToastAndroid.showWithGravity(
+        'Nama Depan belum diisi',
+        ToastAndroid.LONG,
+        ToastAndroid.CENTER,
+      );
     }
   };
 

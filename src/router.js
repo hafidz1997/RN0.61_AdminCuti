@@ -8,6 +8,7 @@ import {
   Pegawai,
   Cuti,
   DetailAdmin,
+  TambahAdmin,
   DetailPegawai,
   DetailCuti,
   Login,
@@ -19,6 +20,7 @@ const AdminScreen = createStackNavigator(
   {
     Admin,
     DetailAdmin,
+    TambahAdmin,
   },
   {
     headerMode: 'none',

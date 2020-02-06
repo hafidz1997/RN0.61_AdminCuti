@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, TextInput, Alert, View} from 'react-native';
+import {StyleSheet, Text, TextInput, View, ToastAndroid} from 'react-native';
 import Button from '../components/Button';
 import {openDatabase} from 'react-native-sqlite-storage';
 let db = openDatabase({name: 'deptech4.db', createFromLocation: 1});
@@ -33,7 +33,6 @@ const style = StyleSheet.create({
     borderColor: 'grey',
     borderWidth: 1,
     margin: 20,
-    width: '85%',
   },
   kosong: {
     fontSize: 20,
@@ -70,35 +69,42 @@ class Login extends React.Component {
           tx.executeSql(
             'SELECT * FROM admin WHERE email = ? AND password = ?',
             [email, password],
-            results => {
+            (tx, results) => {
               if (results.rows.length > 0) {
                 AsyncStorage.setItem('isLoggedIn', '1');
                 AsyncStorage.setItem(
                   'dt',
                   JSON.stringify(results.rows.item(0)),
                 );
-                Alert.alert(
-                  'Berhasil',
-                  'Login berhasil',
-                  [
-                    {
-                      text: 'Ok',
-                      onPress: () => that.props.navigation.navigate('Tab'),
-                    },
-                  ],
-                  {cancelable: false},
+                ToastAndroid.showWithGravity(
+                  'Login Berhasil',
+                  ToastAndroid.LONG,
+                  ToastAndroid.CENTER,
                 );
+                that.props.navigation.navigate('Tab');
               } else {
-                alert('Email atau Password salah');
+                ToastAndroid.showWithGravity(
+                  'Email atau Password salah',
+                  ToastAndroid.LONG,
+                  ToastAndroid.CENTER,
+                );
               }
             },
           );
         });
       } else {
-        alert('Password belum diisi');
+        ToastAndroid.showWithGravity(
+          'Password belum diisi',
+          ToastAndroid.LONG,
+          ToastAndroid.CENTER,
+        );
       }
     } else {
-      alert('Email belum diisi');
+      ToastAndroid.showWithGravity(
+        'Email belum diisi',
+        ToastAndroid.LONG,
+        ToastAndroid.CENTER,
+      );
     }
   };
 
@@ -118,7 +124,7 @@ class Login extends React.Component {
           <TextInput
             secureTextEntry={this.state.pass}
             placeholder="Masukkan Password"
-            style={style.input}
+            style={[style.input, {width: '85%'}]}
             onChangeText={password => this.setState({password})}
           />
           <Icon
@@ -134,6 +140,7 @@ class Login extends React.Component {
           color="#779DCA"
           icon="md-open"
           onPress={this.login.bind(this)}
+          width="95%"
         />
       </>
     );

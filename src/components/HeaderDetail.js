@@ -8,7 +8,7 @@ const style = StyleSheet.create({
     height: 60,
     paddingTop: 15,
     flexDirection: 'row',
-    marginBottom: 15,
+    // marginBottom: 15,
   },
   title: {
     color: 'white',

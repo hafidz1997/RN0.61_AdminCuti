@@ -11,6 +11,7 @@ const style = StyleSheet.create({
     padding: 10,
     margin: 8,
     flexDirection: 'row',
+    alignSelf: 'center',
   },
   text: {
     color: 'white',
