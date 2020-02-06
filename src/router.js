@@ -1,23 +1,32 @@
 import React from 'react';
-import { createBottomTabNavigator } from 'react-navigation-tabs';
-import { createStackNavigator } from 'react-navigation-stack';
+import {createBottomTabNavigator} from 'react-navigation-tabs';
+import {createStackNavigator} from 'react-navigation-stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { createAppContainer, createSwitchNavigator } from 'react-navigation';
-import {Admin, Pegawai, Cuti, DetailAdmin, DetailPegawai, DetailCuti, Login, 
-        AuthLoading, Profil} from './pages'
+import {createAppContainer, createSwitchNavigator} from 'react-navigation';
+import {
+  Admin,
+  Pegawai,
+  Cuti,
+  DetailAdmin,
+  DetailPegawai,
+  DetailCuti,
+  Login,
+  AuthLoading,
+  Profil,
+} from './pages';
 
 const AdminScreen = createStackNavigator(
   {
     Admin,
-    DetailAdmin
+    DetailAdmin,
   },
   {
     headerMode: 'none',
-    initialRouteName: 'Admin'
-  }
+    initialRouteName: 'Admin',
+  },
 );
 
-AdminScreen.navigationOptions = ({ navigation }) => {
+AdminScreen.navigationOptions = ({navigation}) => {
   let tabBarVisible = true;
   if (navigation.state.index > 0) {
     tabBarVisible = false;
@@ -28,19 +37,18 @@ AdminScreen.navigationOptions = ({ navigation }) => {
   };
 };
 
-
 const PegawaiScreen = createStackNavigator(
   {
     Pegawai,
-    DetailPegawai
+    DetailPegawai,
   },
   {
     headerMode: 'none',
-    initialRouteName: 'Pegawai'
-  }
+    initialRouteName: 'Pegawai',
+  },
 );
 
-PegawaiScreen.navigationOptions = ({ navigation }) => {
+PegawaiScreen.navigationOptions = ({navigation}) => {
   let tabBarVisible = true;
   if (navigation.state.index > 0) {
     tabBarVisible = false;
@@ -54,15 +62,15 @@ PegawaiScreen.navigationOptions = ({ navigation }) => {
 const CutiScreen = createStackNavigator(
   {
     Cuti,
-    DetailCuti
+    DetailCuti,
   },
   {
     headerMode: 'none',
-    initialRouteName: 'Cuti'
-  }
+    initialRouteName: 'Cuti',
+  },
 );
 
-CutiScreen.navigationOptions = ({ navigation }) => {
+CutiScreen.navigationOptions = ({navigation}) => {
   let tabBarVisible = true;
   if (navigation.state.index > 0) {
     tabBarVisible = false;
@@ -73,50 +81,49 @@ CutiScreen.navigationOptions = ({ navigation }) => {
   };
 };
 
-
 const Tab = createBottomTabNavigator(
-    {
-      Admin: AdminScreen,
-      Pegawai: PegawaiScreen,
-      Cuti: CutiScreen,
-      Profil: Profil
-    },
-    {
-      defaultNavigationOptions: ({ navigation }) => ({
-        tabBarIcon: ({ tintColor }) => {
-          const { routeName } = navigation.state;
-          let IconComponent = Ionicons;
-          let iconName;
-          if (routeName === 'Admin') {
-            iconName = `md-contacts`;
-          } else if (routeName === 'Pegawai') {
-            iconName = `ios-people`;
-          } else if (routeName === 'Cuti') {
-            iconName = `md-calendar`;
-          } else if (routeName === 'Profil') {
-            iconName = `md-contact`;
-          }
-  
-          return <IconComponent name={iconName} size={25} color={tintColor} />;
-        },
-      }),
-      tabBarOptions: {
-        activeTintColor: '#779DCA',
-        inactiveTintColor: 'gray',
+  {
+    Admin: AdminScreen,
+    Pegawai: PegawaiScreen,
+    Cuti: CutiScreen,
+    Profil: Profil,
+  },
+  {
+    defaultNavigationOptions: ({navigation}) => ({
+      tabBarIcon: ({tintColor}) => {
+        const {routeName} = navigation.state;
+        let IconComponent = Ionicons;
+        let iconName;
+        if (routeName === 'Admin') {
+          iconName = `md-contacts`;
+        } else if (routeName === 'Pegawai') {
+          iconName = `ios-people`;
+        } else if (routeName === 'Cuti') {
+          iconName = `md-calendar`;
+        } else if (routeName === 'Profil') {
+          iconName = `md-contact`;
+        }
+
+        return <IconComponent name={iconName} size={25} color={tintColor} />;
       },
-    }
+    }),
+    tabBarOptions: {
+      activeTintColor: '#779DCA',
+      inactiveTintColor: 'gray',
+    },
+  },
 );
 
 const Route = createSwitchNavigator(
   {
     AuthLoading,
     Login,
-    Tab
+    Tab,
   },
   {
     headerMode: 'none',
-    initialRouteName: 'AuthLoading'
-  }
+    initialRouteName: 'AuthLoading',
+  },
 );
 
 export default createAppContainer(Route);

@@ -8,14 +8,14 @@ import Cuti from './Cuti';
 import DetailCuti from './DetailCuti';
 import Profil from './Profil';
 
-export{
-    AuthLoading,
-    Login,
-    Admin,
-    DetailAdmin,
-    Pegawai,
-    DetailPegawai,
-    Cuti,
-    DetailCuti,
-    Profil
-}
+export {
+  AuthLoading,
+  Login,
+  Admin,
+  DetailAdmin,
+  Pegawai,
+  DetailPegawai,
+  Cuti,
+  DetailCuti,
+  Profil,
+};
