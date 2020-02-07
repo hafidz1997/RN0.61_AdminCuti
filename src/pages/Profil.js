@@ -4,7 +4,7 @@ import Header from '../components/Header';
 import Button from '../components/Button';
 import AsyncStorage from '@react-native-community/async-storage';
 import {openDatabase} from 'react-native-sqlite-storage';
-let db = openDatabase({name: 'deptech5.db', createFromLocation: 1});
+let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
 
 const style = StyleSheet.create({
   judul2: {

@@ -4,16 +4,14 @@ import {
   View,
   Text,
   ScrollView,
-  TextInput,
   Alert,
   ToastAndroid,
   Image,
 } from 'react-native';
 import HeaderDetail from '../components/HeaderDetail';
 import Button from '../components/Button';
-import Modal from 'react-native-modalbox';
 import {openDatabase} from 'react-native-sqlite-storage';
-let db = openDatabase({name: 'deptech5.db', createFromLocation: 1});
+let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
 
 class DetailAdmin extends React.Component {
   constructor(props) {
@@ -26,7 +24,6 @@ class DetailAdmin extends React.Component {
       foto: '',
     };
     let id = this.props.navigation.getParam('id', 0);
-    // console.warn(id);
     db.transaction(tx => {
       tx.executeSql('SELECT * FROM admin where id = ?', [id], (tx, results) => {
         let len = results.rows.length;
@@ -57,7 +54,6 @@ class DetailAdmin extends React.Component {
     const {navigation} = this.props;
     this.focusListener = navigation.addListener('didFocus', () => {
       let id = this.props.navigation.getParam('id', 0);
-      // console.warn(id);
       db.transaction(tx => {
         tx.executeSql(
           'SELECT * FROM admin where id = ?',

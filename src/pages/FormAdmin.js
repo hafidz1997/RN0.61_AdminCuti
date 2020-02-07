@@ -11,7 +11,7 @@ import {
 import HeaderDetail from '../components/HeaderDetail';
 import Button from '../components/Button';
 import {openDatabase} from 'react-native-sqlite-storage';
-let db = openDatabase({name: 'deptech5.db', createFromLocation: 1});
+let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
 import Icon from 'react-native-vector-icons/Ionicons';
 import {ActionSheet, Root} from 'native-base';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -69,7 +69,6 @@ class FormAdmin extends React.Component {
       this.setState({
         foto: image.path,
       });
-      // console.log(image);
     });
   };
 
@@ -82,7 +81,6 @@ class FormAdmin extends React.Component {
       this.setState({
         foto: image.path,
       });
-      // console.warn(image.path);
     });
   };
 

@@ -20,6 +20,7 @@
     "react-native-gesture-handler": "^1.5.3",
     "react-native-image-crop-picker": "^0.28.0",
     "react-native-modalbox": "^2.0.0",
+    "react-native-paper": "^3.6.0",
     "react-native-reanimated": "^1.7.0",
     "react-native-safe-area-context": "^0.6.2",
     "react-native-screens": "^2.0.0-alpha.32",

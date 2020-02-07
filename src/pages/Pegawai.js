@@ -4,7 +4,7 @@ import Header from '../components/Header';
 import AddButton from '../components/AddButton';
 import List from '../components/List';
 import {openDatabase} from 'react-native-sqlite-storage';
-let db = openDatabase({name: 'deptech5.db', createFromLocation: 1});
+let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
 
 const style = StyleSheet.create({
   container: {

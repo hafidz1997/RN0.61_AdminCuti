@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, TextInput, View, ToastAndroid} from 'react-native';
 import Button from '../components/Button';
 import {openDatabase} from 'react-native-sqlite-storage';
-let db = openDatabase({name: 'deptech5.db', createFromLocation: 1});
+let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
 import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
 
