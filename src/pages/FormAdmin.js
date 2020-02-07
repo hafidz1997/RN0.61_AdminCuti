@@ -11,7 +11,7 @@ import {
 import HeaderDetail from '../components/HeaderDetail';
 import Button from '../components/Button';
 import {openDatabase} from 'react-native-sqlite-storage';
-let db = openDatabase({name: 'deptech4.db', createFromLocation: 1});
+let db = openDatabase({name: 'deptech5.db', createFromLocation: 1});
 import Icon from 'react-native-vector-icons/Ionicons';
 import {ActionSheet, Root} from 'native-base';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -31,7 +31,6 @@ class FormAdmin extends React.Component {
       foto: null,
     };
     let id = this.props.navigation.getParam('id', 0);
-    // console.warn(id);
     db.transaction(tx => {
       tx.executeSql('SELECT * FROM admin where id = ?', [id], (tx, results) => {
         let len = results.rows.length;
@@ -42,6 +41,7 @@ class FormAdmin extends React.Component {
             depan: results.rows.item(0).depan,
             belakang: results.rows.item(0).belakang,
             email: results.rows.item(0).email,
+            foto: results.rows.item(0).foto,
             judul: 'Update Admin',
           });
         } else {
@@ -66,7 +66,10 @@ class FormAdmin extends React.Component {
       height: 400,
       cropping: true,
     }).then(image => {
-      console.log(image);
+      this.setState({
+        foto: image.path,
+      });
+      // console.log(image);
     });
   };
 
@@ -79,7 +82,7 @@ class FormAdmin extends React.Component {
       this.setState({
         foto: image.path,
       });
-      console.warn(image.path);
+      // console.warn(image.path);
     });
   };
 
@@ -104,6 +107,133 @@ class FormAdmin extends React.Component {
         }
       },
     );
+  };
+
+  tambah = () => {
+    let that = this;
+    const {depan, belakang, email, password, foto} = this.state;
+    if (depan) {
+      if (belakang) {
+        if (email) {
+          if (password) {
+            if (foto) {
+              db.transaction(tx => {
+                tx.executeSql(
+                  'INSERT INTO admin (depan, belakang, email, password, foto) VALUES (?,?,?,?,?)',
+                  [depan, belakang, email, password, foto],
+                  (tx, results) => {
+                    if (results.rowsAffected > 0) {
+                      ToastAndroid.showWithGravity(
+                        'Admin berhasil ditambahkan',
+                        ToastAndroid.LONG,
+                        ToastAndroid.CENTER,
+                      );
+                      that.props.navigation.pop();
+                    } else {
+                      ToastAndroid.showWithGravity(
+                        'Gagal',
+                        ToastAndroid.LONG,
+                        ToastAndroid.CENTER,
+                      );
+                    }
+                  },
+                );
+              });
+            } else {
+              ToastAndroid.showWithGravity(
+                'Foto belum diupload',
+                ToastAndroid.LONG,
+                ToastAndroid.CENTER,
+              );
+            }
+          } else {
+            ToastAndroid.showWithGravity(
+              'Password belum diisi',
+              ToastAndroid.LONG,
+              ToastAndroid.CENTER,
+            );
+          }
+        } else {
+          ToastAndroid.showWithGravity(
+            'Email belum diisi',
+            ToastAndroid.LONG,
+            ToastAndroid.CENTER,
+          );
+        }
+      } else {
+        ToastAndroid.showWithGravity(
+          'Nama Belakang belum diisi',
+          ToastAndroid.LONG,
+          ToastAndroid.CENTER,
+        );
+      }
+    } else {
+      ToastAndroid.showWithGravity(
+        'Nama Depan belum diisi',
+        ToastAndroid.LONG,
+        ToastAndroid.CENTER,
+      );
+    }
+  };
+
+  update = () => {
+    let that = this;
+    let id = this.props.navigation.getParam('id', 0);
+    const {depan, belakang, email, foto} = this.state;
+    if (depan) {
+      if (belakang) {
+        if (email) {
+          if (foto) {
+            db.transaction(tx => {
+              tx.executeSql(
+                'UPDATE admin set depan=?, belakang=?, email=?, foto=? where id=?',
+                [depan, belakang, email, foto, id],
+                (tx, results) => {
+                  if (results.rowsAffected > 0) {
+                    ToastAndroid.showWithGravity(
+                      'Admin berhasil di update',
+                      ToastAndroid.LONG,
+                      ToastAndroid.CENTER,
+                    );
+                    that.props.navigation.pop();
+                  } else {
+                    ToastAndroid.showWithGravity(
+                      'Update gagal',
+                      ToastAndroid.LONG,
+                      ToastAndroid.CENTER,
+                    );
+                  }
+                },
+              );
+            });
+          } else {
+            ToastAndroid.showWithGravity(
+              'Foto belum diupload',
+              ToastAndroid.LONG,
+              ToastAndroid.CENTER,
+            );
+          }
+        } else {
+          ToastAndroid.showWithGravity(
+            'Email belum diisi',
+            ToastAndroid.LONG,
+            ToastAndroid.CENTER,
+          );
+        }
+      } else {
+        ToastAndroid.showWithGravity(
+          'Nama Depan belum diisi',
+          ToastAndroid.LONG,
+          ToastAndroid.CENTER,
+        );
+      }
+    } else {
+      ToastAndroid.showWithGravity(
+        'Nama Belakang belum diisi',
+        ToastAndroid.LONG,
+        ToastAndroid.CENTER,
+      );
+    }
   };
 
   render() {
@@ -179,9 +309,7 @@ class FormAdmin extends React.Component {
               alignSelf="flex-start"
               onPress={this.upload}
             />
-            {foto && (
-              <Image source={{uri: foto}} style={{width: 200, height: 200}} />
-            )}
+            {foto && <Image source={{uri: foto}} style={style.foto} />}
             <Text style={style.label}>Email</Text>
             <TextInput
               placeholder="Masukkan Email"
@@ -196,152 +324,6 @@ class FormAdmin extends React.Component {
       </Root>
     );
   }
-
-  tambah = () => {
-    let that = this;
-    const {depan, belakang, email, password} = this.state;
-    if (depan) {
-      if (belakang) {
-        if (email) {
-          if (password) {
-            db.transaction(tx => {
-              tx.executeSql(
-                'INSERT INTO admin (depan, belakang, email, password) VALUES (?,?,?,?)',
-                [depan, belakang, email, password],
-                (tx, results) => {
-                  if (results.rowsAffected > 0) {
-                    // tx.executeSql('SELECT * FROM admin', [], (tx, results) => {
-                    //   let temp = [];
-                    //   for (let i = 0; i < results.rows.length; ++i) {
-                    //     temp.push(results.rows.item(i));
-                    //   }
-                    //   this.setState({
-                    //     admin: temp,
-                    //   });
-                    // });
-                    ToastAndroid.showWithGravity(
-                      'Admin berhasil ditambahkan',
-                      ToastAndroid.LONG,
-                      ToastAndroid.CENTER,
-                    );
-                    that.props.navigation.pop();
-                  } else {
-                    ToastAndroid.showWithGravity(
-                      'Gagal',
-                      ToastAndroid.LONG,
-                      ToastAndroid.CENTER,
-                    );
-                  }
-                },
-              );
-            });
-          } else {
-            ToastAndroid.showWithGravity(
-              'Password belum diisi',
-              ToastAndroid.LONG,
-              ToastAndroid.CENTER,
-            );
-          }
-        } else {
-          ToastAndroid.showWithGravity(
-            'Email belum diisi',
-            ToastAndroid.LONG,
-            ToastAndroid.CENTER,
-          );
-        }
-      } else {
-        ToastAndroid.showWithGravity(
-          'Nama Belakang belum diisi',
-          ToastAndroid.LONG,
-          ToastAndroid.CENTER,
-        );
-      }
-    } else {
-      ToastAndroid.showWithGravity(
-        'Nama Depan belum diisi',
-        ToastAndroid.LONG,
-        ToastAndroid.CENTER,
-      );
-    }
-  };
-
-  update = () => {
-    let that = this;
-    let id = this.props.navigation.getParam('id', 0);
-    const {depan, belakang, email} = this.state;
-    // console.warn(depan);
-    if (depan) {
-      if (belakang) {
-        if (email) {
-          db.transaction(tx => {
-            tx.executeSql(
-              'UPDATE admin set depan=?, belakang=?, email=? where id=?',
-              [depan, belakang, email, id],
-              (tx, results) => {
-                if (results.rowsAffected > 0) {
-                  tx.executeSql(
-                    'SELECT * FROM admin where id = ?',
-                    [id],
-                    (tx, results) => {
-                      let len = results.rows.length;
-                      console.log('len', len);
-                      if (len > 0) {
-                        this.setState({
-                          admin: results.rows.item(0),
-                          depan: results.rows.item(0).depan,
-                          belakang: results.rows.item(0).belakang,
-                          email: results.rows.item(0).email,
-                        });
-                      } else {
-                        ToastAndroid.showWithGravity(
-                          'No user found',
-                          ToastAndroid.LONG,
-                          ToastAndroid.CENTER,
-                        );
-                        this.setState({
-                          admin: '',
-                        });
-                      }
-                    },
-                  );
-                  ToastAndroid.showWithGravity(
-                    'Admin berhasil di update',
-                    ToastAndroid.LONG,
-                    ToastAndroid.CENTER,
-                  );
-                  that.props.navigation.pop();
-                } else {
-                  ToastAndroid.showWithGravity(
-                    'Update gagal',
-                    ToastAndroid.LONG,
-                    ToastAndroid.CENTER,
-                  );
-                }
-              },
-            );
-          });
-        } else {
-          ToastAndroid.showWithGravity(
-            'Email belum diisi',
-            ToastAndroid.LONG,
-            ToastAndroid.CENTER,
-          );
-        }
-      } else {
-        ToastAndroid.showWithGravity(
-          'Nama Depan belum diisi',
-          ToastAndroid.LONG,
-          ToastAndroid.CENTER,
-        );
-      }
-    } else {
-      ToastAndroid.showWithGravity(
-        'Nama Belakang belum diisi',
-        ToastAndroid.LONG,
-        ToastAndroid.CENTER,
-      );
-    }
-  };
 }
 
 const style = StyleSheet.create({
@@ -385,6 +367,7 @@ const style = StyleSheet.create({
     height: 50,
     marginTop: 20,
   },
+  foto: {width: 200, height: 200, margin: 20},
 });
 
 export default FormAdmin;

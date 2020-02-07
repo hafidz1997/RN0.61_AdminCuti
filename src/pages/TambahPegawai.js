@@ -15,7 +15,7 @@ import RadioForm, {
 } from 'react-native-simple-radio-button';
 import {openDatabase} from 'react-native-sqlite-storage';
 import HeaderDetail from '../components/HeaderDetail';
-let db = openDatabase({name: 'deptech4.db', createFromLocation: 1});
+let db = openDatabase({name: 'deptech5.db', createFromLocation: 1});
 
 const style = StyleSheet.create({
   container: {

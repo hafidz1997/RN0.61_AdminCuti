@@ -7,12 +7,164 @@ import {
   TextInput,
   Alert,
   ToastAndroid,
+  Image,
 } from 'react-native';
 import HeaderDetail from '../components/HeaderDetail';
 import Button from '../components/Button';
 import Modal from 'react-native-modalbox';
 import {openDatabase} from 'react-native-sqlite-storage';
-let db = openDatabase({name: 'deptech4.db', createFromLocation: 1});
+let db = openDatabase({name: 'deptech5.db', createFromLocation: 1});
+
+class DetailAdmin extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      admin: '',
+      depan: '',
+      belakang: '',
+      email: '',
+      foto: '',
+    };
+    let id = this.props.navigation.getParam('id', 0);
+    // console.warn(id);
+    db.transaction(tx => {
+      tx.executeSql('SELECT * FROM admin where id = ?', [id], (tx, results) => {
+        let len = results.rows.length;
+        console.log('len', len);
+        if (len > 0) {
+          this.setState({
+            admin: results.rows.item(0),
+            depan: results.rows.item(0).depan,
+            belakang: results.rows.item(0).belakang,
+            email: results.rows.item(0).email,
+            foto: results.rows.item(0).foto,
+          });
+        } else {
+          ToastAndroid.showWithGravity(
+            'No user found',
+            ToastAndroid.LONG,
+            ToastAndroid.CENTER,
+          );
+          this.setState({
+            admin: '',
+          });
+        }
+      });
+    });
+  }
+
+  componentDidMount() {
+    const {navigation} = this.props;
+    this.focusListener = navigation.addListener('didFocus', () => {
+      let id = this.props.navigation.getParam('id', 0);
+      // console.warn(id);
+      db.transaction(tx => {
+        tx.executeSql(
+          'SELECT * FROM admin where id = ?',
+          [id],
+          (tx, results) => {
+            let len = results.rows.length;
+            console.log('len', len);
+            if (len > 0) {
+              this.setState({
+                admin: results.rows.item(0),
+                depan: results.rows.item(0).depan,
+                belakang: results.rows.item(0).belakang,
+                email: results.rows.item(0).email,
+                foto: results.rows.item(0).foto,
+              });
+            } else {
+              ToastAndroid.showWithGravity(
+                'No user found',
+                ToastAndroid.LONG,
+                ToastAndroid.CENTER,
+              );
+              this.setState({
+                admin: '',
+              });
+            }
+          },
+        );
+      });
+    });
+  }
+
+  componentWillUnmount() {
+    this.focusListener.remove();
+  }
+
+  hapus() {
+    Alert.alert('Hapus Admin', 'Apakah anda yakin akan menghapus admin?', [
+      {text: 'Tidak'},
+      {text: 'Iya', onPress: this.deleteAdmin},
+    ]);
+  }
+
+  deleteAdmin = () => {
+    let that = this;
+    let id = this.props.navigation.getParam('id', 0);
+    db.transaction(tx => {
+      tx.executeSql('DELETE FROM admin where id=?', [id], (tx, results) => {
+        if (results.rowsAffected > 0) {
+          ToastAndroid.showWithGravity(
+            'Admin berhasil dihapus',
+            ToastAndroid.LONG,
+            ToastAndroid.CENTER,
+          );
+          that.props.navigation.navigate('Admin');
+        } else {
+          ToastAndroid.showWithGravity(
+            'Hapus gagal',
+            ToastAndroid.LONG,
+            ToastAndroid.CENTER,
+          );
+        }
+      });
+    });
+  };
+
+  render() {
+    let {foto} = this.state.admin;
+    return (
+      <>
+        <HeaderDetail
+          title="Detail Admin"
+          onPress={() => this.props.navigation.pop()}
+        />
+        <ScrollView style={{padding: 10}}>
+          {foto && <Image source={{uri: foto}} style={style.foto} />}
+          <Text style={style.judul2}>Nama Depan</Text>
+          <Text style={style.isi}>{this.state.admin.depan}</Text>
+          <View style={style.garis} />
+          <Text style={style.judul2}>Nama Belakang</Text>
+          <Text style={style.isi}>{this.state.admin.belakang}</Text>
+          <View style={style.garis} />
+          <Text style={style.judul2}>Email</Text>
+          <Text style={style.isi}>{this.state.admin.email}</Text>
+          <View style={style.garis} />
+        </ScrollView>
+        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+          <Button
+            title="Hapus"
+            color="tomato"
+            icon="ios-trash"
+            onPress={this.hapus.bind(this)}
+          />
+          <Button
+            title="Update"
+            color="#779DCA"
+            icon="md-create"
+            onPress={() =>
+              this.props.navigation.navigate('FormAdmin', {
+                id: this.state.admin.id,
+              })
+            }
+          />
+        </View>
+      </>
+    );
+  }
+}
 
 const style = StyleSheet.create({
   modalContainer: {
@@ -56,278 +208,13 @@ const style = StyleSheet.create({
     borderBottomWidth: 1,
     marginBottom: 12,
   },
+  foto: {
+    width: 200,
+    height: 200,
+    margin: 20,
+    borderRadius: 100,
+    alignSelf: 'center',
+  },
 });
-
-class DetailAdmin extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      admin: '',
-      depan: '',
-      belakang: '',
-      email: '',
-    };
-    let id = this.props.navigation.getParam('id', 0);
-    // console.warn(id);
-    db.transaction(tx => {
-      tx.executeSql('SELECT * FROM admin where id = ?', [id], (tx, results) => {
-        let len = results.rows.length;
-        console.log('len', len);
-        if (len > 0) {
-          this.setState({
-            admin: results.rows.item(0),
-            depan: results.rows.item(0).depan,
-            belakang: results.rows.item(0).belakang,
-            email: results.rows.item(0).email,
-          });
-        } else {
-          ToastAndroid.showWithGravity(
-            'No user found',
-            ToastAndroid.LONG,
-            ToastAndroid.CENTER,
-          );
-          this.setState({
-            admin: '',
-          });
-        }
-      });
-    });
-  }
-
-  componentDidMount() {
-    const {navigation} = this.props;
-    this.focusListener = navigation.addListener('didFocus', () => {
-      let id = this.props.navigation.getParam('id', 0);
-      // console.warn(id);
-      db.transaction(tx => {
-        tx.executeSql(
-          'SELECT * FROM admin where id = ?',
-          [id],
-          (tx, results) => {
-            let len = results.rows.length;
-            console.log('len', len);
-            if (len > 0) {
-              this.setState({
-                admin: results.rows.item(0),
-                depan: results.rows.item(0).depan,
-                belakang: results.rows.item(0).belakang,
-                email: results.rows.item(0).email,
-              });
-            } else {
-              ToastAndroid.showWithGravity(
-                'No user found',
-                ToastAndroid.LONG,
-                ToastAndroid.CENTER,
-              );
-              this.setState({
-                admin: '',
-              });
-            }
-          },
-        );
-      });
-    });
-  }
-
-  componentWillUnmount() {
-    this.focusListener.remove();
-  }
-
-  render() {
-    return (
-      <>
-        <HeaderDetail
-          title="Detail Admin"
-          onPress={() => this.props.navigation.pop()}
-        />
-        <ScrollView style={{padding: 10}}>
-          <Text style={style.judul2}>Nama Depan</Text>
-          <Text style={style.isi}>{this.state.admin.depan}</Text>
-          <View style={style.garis} />
-          <Text style={style.judul2}>Nama Belakang</Text>
-          <Text style={style.isi}>{this.state.admin.belakang}</Text>
-          <View style={style.garis} />
-          <Text style={style.judul2}>Email</Text>
-          <Text style={style.isi}>{this.state.admin.email}</Text>
-          <View style={style.garis} />
-        </ScrollView>
-        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-          <Button
-            title="Hapus"
-            color="tomato"
-            icon="ios-trash"
-            onPress={this.hapus.bind(this)}
-          />
-          <Button
-            title="Update"
-            color="#779DCA"
-            icon="md-create"
-            onPress={() =>
-              this.props.navigation.navigate('FormAdmin', {
-                id: this.state.admin.id,
-              })
-            }
-          />
-        </View>
-        <Modal
-          ref={'Modal'}
-          style={style.modalContainer}
-          position="center"
-          backdrop={true}
-          swipeToClose={false}>
-          <ScrollView>
-            <Text style={style.judul}>Update Admin</Text>
-            <Text style={style.label}>Nama Depan</Text>
-            <TextInput
-              placeholder="Masukkan Nama Depan"
-              style={style.input}
-              value={this.state.depan}
-              onChangeText={depan => this.setState({depan})}
-            />
-            <Text style={style.label}>Nama Belakang</Text>
-            <TextInput
-              placeholder="Masukkan Nama Belakang"
-              style={style.input}
-              value={this.state.belakang}
-              onChangeText={belakang => this.setState({belakang})}
-            />
-            <Text style={style.label}>Email</Text>
-            <TextInput
-              placeholder="Masukkan Email"
-              style={style.input}
-              value={this.state.email}
-              onChangeText={email => this.setState({email})}
-              keyboardType="email-address"
-            />
-            <Button
-              title="Update"
-              color="#779DCA"
-              icon="md-create"
-              onPress={this.update.bind(this)}
-            />
-          </ScrollView>
-        </Modal>
-      </>
-    );
-  }
-
-  update = () => {
-    let that = this;
-    let id = this.props.navigation.getParam('id', 0);
-    const {depan, belakang, email} = this.state;
-    // console.warn(depan);
-    if (depan) {
-      if (belakang) {
-        if (email) {
-          db.transaction(tx => {
-            tx.executeSql(
-              'UPDATE admin set depan=?, belakang=?, email=? where id=?',
-              [depan, belakang, email, id],
-              (tx, results) => {
-                if (results.rowsAffected > 0) {
-                  tx.executeSql(
-                    'SELECT * FROM admin where id = ?',
-                    [id],
-                    (tx, results) => {
-                      let len = results.rows.length;
-                      console.log('len', len);
-                      if (len > 0) {
-                        this.setState({
-                          admin: results.rows.item(0),
-                        });
-                        this.setState({
-                          depan: results.rows.item(0).depan,
-                        });
-                        this.setState({
-                          belakang: results.rows.item(0).belakang,
-                        });
-                        this.setState({
-                          email: results.rows.item(0).email,
-                        });
-                      } else {
-                        ToastAndroid.showWithGravity(
-                          'No user found',
-                          ToastAndroid.LONG,
-                          ToastAndroid.CENTER,
-                        );
-                        this.setState({
-                          admin: '',
-                        });
-                      }
-                    },
-                  );
-                  ToastAndroid.showWithGravity(
-                    'Admin berhasil di update',
-                    ToastAndroid.LONG,
-                    ToastAndroid.CENTER,
-                  );
-                  that.refs.Modal.close();
-                } else {
-                  ToastAndroid.showWithGravity(
-                    'Update gagal',
-                    ToastAndroid.LONG,
-                    ToastAndroid.CENTER,
-                  );
-                }
-              },
-            );
-          });
-        } else {
-          ToastAndroid.showWithGravity(
-            'Email belum diisi',
-            ToastAndroid.LONG,
-            ToastAndroid.CENTER,
-          );
-        }
-      } else {
-        ToastAndroid.showWithGravity(
-          'Nama Depan belum diisi',
-          ToastAndroid.LONG,
-          ToastAndroid.CENTER,
-        );
-      }
-    } else {
-      ToastAndroid.showWithGravity(
-        'Nama Belakang belum diisi',
-        ToastAndroid.LONG,
-        ToastAndroid.CENTER,
-      );
-    }
-  };
-
-  openModal() {
-    this.refs.Modal.open();
-  }
-
-  hapus() {
-    Alert.alert('Hapus Admin', 'Apakah anda yakin akan menghapus admin?', [
-      {text: 'Tidak'},
-      {text: 'Iya', onPress: this.deleteAdmin},
-    ]);
-  }
-
-  deleteAdmin = () => {
-    let that = this;
-    let id = this.props.navigation.getParam('id', 0);
-    db.transaction(tx => {
-      tx.executeSql('DELETE FROM admin where id=?', [id], (tx, results) => {
-        if (results.rowsAffected > 0) {
-          ToastAndroid.showWithGravity(
-            'Admin berhasil dihapus',
-            ToastAndroid.LONG,
-            ToastAndroid.CENTER,
-          );
-          that.props.navigation.navigate('Admin');
-        } else {
-          ToastAndroid.showWithGravity(
-            'Hapus gagal',
-            ToastAndroid.LONG,
-            ToastAndroid.CENTER,
-          );
-        }
-      });
-    });
-  };
-}
 
 export default DetailAdmin;

@@ -17,7 +17,7 @@ import {openDatabase} from 'react-native-sqlite-storage';
 import AddButton from '../components/AddButton';
 import List from '../components/List';
 import DatePicker from 'react-native-datepicker';
-let db = openDatabase({name: 'deptech4.db', createFromLocation: 1});
+let db = openDatabase({name: 'deptech5.db', createFromLocation: 1});
 
 const style = StyleSheet.create({
   modalContainer: {
