@@ -76,14 +76,8 @@ class DetailAdmin extends React.Component {
         if (len > 0) {
           this.setState({
             admin: results.rows.item(0),
-          });
-          this.setState({
             depan: results.rows.item(0).depan,
-          });
-          this.setState({
             belakang: results.rows.item(0).belakang,
-          });
-          this.setState({
             email: results.rows.item(0).email,
           });
         } else {
@@ -98,6 +92,45 @@ class DetailAdmin extends React.Component {
         }
       });
     });
+  }
+
+  componentDidMount() {
+    const {navigation} = this.props;
+    this.focusListener = navigation.addListener('didFocus', () => {
+      let id = this.props.navigation.getParam('id', 0);
+      // console.warn(id);
+      db.transaction(tx => {
+        tx.executeSql(
+          'SELECT * FROM admin where id = ?',
+          [id],
+          (tx, results) => {
+            let len = results.rows.length;
+            console.log('len', len);
+            if (len > 0) {
+              this.setState({
+                admin: results.rows.item(0),
+                depan: results.rows.item(0).depan,
+                belakang: results.rows.item(0).belakang,
+                email: results.rows.item(0).email,
+              });
+            } else {
+              ToastAndroid.showWithGravity(
+                'No user found',
+                ToastAndroid.LONG,
+                ToastAndroid.CENTER,
+              );
+              this.setState({
+                admin: '',
+              });
+            }
+          },
+        );
+      });
+    });
+  }
+
+  componentWillUnmount() {
+    this.focusListener.remove();
   }
 
   render() {
@@ -129,7 +162,11 @@ class DetailAdmin extends React.Component {
             title="Update"
             color="#779DCA"
             icon="md-create"
-            onPress={this.openModal.bind(this)}
+            onPress={() =>
+              this.props.navigation.navigate('FormAdmin', {
+                id: this.state.admin.id,
+              })
+            }
           />
         </View>
         <Modal

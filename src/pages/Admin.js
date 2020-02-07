@@ -90,7 +90,7 @@ class Admin extends React.Component {
         <View style={style.container}>
           {tampilan}
           <AddButton
-            onPress={() => this.props.navigation.navigate('TambahAdmin')}
+            onPress={() => this.props.navigation.navigate('FormAdmin')}
           />
         </View>
       </>

@@ -2,7 +2,7 @@ import AuthLoading from './AuthLoading';
 import Login from './Login';
 import Admin from './Admin';
 import DetailAdmin from './DetailAdmin';
-import TambahAdmin from './TambahAdmin';
+import FormAdmin from './FormAdmin';
 import Pegawai from './Pegawai';
 import DetailPegawai from './DetailPegawai';
 import TambahPegawai from './TambahPegawai';
@@ -15,7 +15,7 @@ export {
   Login,
   Admin,
   DetailAdmin,
-  TambahAdmin,
+  FormAdmin,
   Pegawai,
   DetailPegawai,
   TambahPegawai,

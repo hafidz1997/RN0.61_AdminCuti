@@ -139,8 +139,9 @@ class Login extends React.Component {
           title="Login"
           color="#779DCA"
           icon="md-open"
+          alignSelf="center"
           onPress={this.login.bind(this)}
-          width="95%"
+          width="80%"
         />
       </>
     );

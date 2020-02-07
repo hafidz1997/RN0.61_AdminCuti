@@ -5,13 +5,12 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 const style = StyleSheet.create({
   button: {
     borderRadius: 8,
-    // width: 120,
-    justifyContent: 'center',
-    alignItems: 'center',
     padding: 10,
-    margin: 8,
+    margin: 10,
+    marginLeft: 20,
     flexDirection: 'row',
-    alignSelf: 'center',
+    alignSelf: 'flex-start',
+    justifyContent: 'center',
   },
   text: {
     color: 'white',
@@ -33,7 +32,11 @@ const Button = props => {
       onPress={props.onPress}
       style={[
         style.button,
-        {backgroundColor: props.color, width: props.width},
+        {
+          backgroundColor: props.color,
+          width: props.width,
+          alignSelf: props.alignSelf,
+        },
       ]}>
       <Ionicons style={style.icon} name={props.icon} size={20} color="white" />
       {tampil}

@@ -120,7 +120,7 @@ class TambahPegawai extends React.Component {
                           ToastAndroid.LONG,
                           ToastAndroid.CENTER,
                         );
-                        that.refs.Modal.close();
+                        that.props.navigation.pop();
                       } else {
                         ToastAndroid.showWithGravity(
                           'Gagal',
