@@ -10,7 +10,7 @@ import {
   DetailAdmin,
   FormAdmin,
   DetailPegawai,
-  TambahPegawai,
+  FormPegawai,
   DetailCuti,
   Login,
   AuthLoading,
@@ -44,7 +44,7 @@ const PegawaiScreen = createStackNavigator(
   {
     Pegawai,
     DetailPegawai,
-    TambahPegawai,
+    FormPegawai,
   },
   {
     headerMode: 'none',

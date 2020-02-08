@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Text, ScrollView, Alert} from 'react-native';
+import {StyleSheet, View, Text, ScrollView, Alert, Image} from 'react-native';
 import Header from '../components/Header';
 import Button from '../components/Button';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -24,6 +24,13 @@ const style = StyleSheet.create({
     borderBottomWidth: 1,
     marginBottom: 12,
   },
+  foto: {
+    width: 200,
+    height: 200,
+    margin: 20,
+    borderRadius: 100,
+    alignSelf: 'center',
+  },
 });
 
 class Profil extends React.Component {
@@ -31,9 +38,6 @@ class Profil extends React.Component {
     super(props);
     this.state = {
       admin: '',
-      depan: '',
-      belakang: '',
-      email: '',
     };
   }
 
@@ -47,6 +51,7 @@ class Profil extends React.Component {
       <>
         <Header title="Profil Saya" />
         <ScrollView style={{padding: 10}}>
+          <Image source={{uri: this.state.admin.foto}} style={style.foto} />
           <Text style={style.judul2}>Nama Depan</Text>
           <Text style={style.isi}>{this.state.admin.depan}</Text>
           <View style={style.garis} />
@@ -56,15 +61,26 @@ class Profil extends React.Component {
           <Text style={style.judul2}>Email</Text>
           <Text style={style.isi}>{this.state.admin.email}</Text>
           <View style={style.garis} />
+          <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+            <Button
+              title="Edit Profil"
+              color="#779DCA"
+              icon="md-create"
+              // alignSelf="center"
+              onPress={() =>
+                this.props.navigation.navigate('FormAdmin', {
+                  id: this.state.admin.id,
+                })
+              }
+            />
+            <Button
+              title="Logout"
+              color="tomato"
+              icon="md-exit"
+              onPress={this.logout.bind(this)}
+            />
+          </View>
         </ScrollView>
-        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-          <Button
-            title="Logout"
-            color="tomato"
-            icon="md-exit"
-            onPress={this.logout.bind(this)}
-          />
-        </View>
       </>
     );
   }

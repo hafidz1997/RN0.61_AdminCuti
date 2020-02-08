@@ -3,6 +3,7 @@ import {StyleSheet, View, Text, FlatList} from 'react-native';
 import Header from '../components/Header';
 import AddButton from '../components/AddButton';
 import List from '../components/List';
+import AsyncStorage from '@react-native-community/async-storage';
 import {openDatabase} from 'react-native-sqlite-storage';
 let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
 
@@ -27,7 +28,14 @@ class Admin extends React.Component {
       belakang: '',
       email: '',
       password: '',
+      profil: [],
     };
+    // const dt = AsyncStorage.getItem('dt');
+    // // const data = JSON.parse(dt);
+    // console.warn(dt);
+    // // this.setState({
+    // //   profil: data,
+    // // });
     db.transaction(tx => {
       tx.executeSql('SELECT * FROM admin', [], (tx, results) => {
         let temp = [];
@@ -41,7 +49,10 @@ class Admin extends React.Component {
     });
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    const dt = await AsyncStorage.getItem('dt');
+    this.setState({profil: JSON.parse(dt)});
+    // console.warn(this.state.profil);
     const {navigation} = this.props;
     this.focusListener = navigation.addListener('didFocus', () => {
       db.transaction(tx => {
@@ -64,20 +75,26 @@ class Admin extends React.Component {
 
   render() {
     let tampilan;
+    // console.warn('profil.id', this.state.profil.id);
+    // console.warn('id', id);
     if (this.state.admin.length !== 0) {
       tampilan = (
         <FlatList
           data={this.state.admin}
-          renderItem={({item}) => (
-            <List
-              depan={item.depan}
-              belakang={item.belakang}
-              email={item.email}
-              onPress={() =>
-                this.props.navigation.navigate('DetailAdmin', {id: item.id})
-              }
-            />
-          )}
+          renderItem={({item}) => {
+            if (item.id !== this.state.profil.id) {
+              return (
+                <List
+                  depan={item.depan}
+                  belakang={item.belakang}
+                  email={item.email}
+                  onPress={() =>
+                    this.props.navigation.navigate('DetailAdmin', {id: item.id})
+                  }
+                />
+              );
+            }
+          }}
           keyExtractor={item => item.id.toString()}
         />
       );

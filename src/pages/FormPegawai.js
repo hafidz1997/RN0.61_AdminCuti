@@ -290,6 +290,7 @@ class TambahPegawai extends React.Component {
                   onPress={() => {
                     this.setState({jk: 1});
                   }}
+                  color="#779DCA"
                 />
                 <Text
                   style={{
@@ -307,6 +308,7 @@ class TambahPegawai extends React.Component {
                   onPress={() => {
                     this.setState({jk: 2});
                   }}
+                  color="#779DCA"
                 />
                 <Text
                   style={{

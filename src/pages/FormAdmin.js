@@ -15,6 +15,7 @@ let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
 import Icon from 'react-native-vector-icons/Ionicons';
 import {ActionSheet, Root} from 'native-base';
 import ImagePicker from 'react-native-image-crop-picker';
+import AsyncStorage from '@react-native-community/async-storage';
 
 class FormAdmin extends React.Component {
   constructor(props) {
@@ -42,7 +43,6 @@ class FormAdmin extends React.Component {
             belakang: results.rows.item(0).belakang,
             email: results.rows.item(0).email,
             foto: results.rows.item(0).foto,
-            judul: 'Update Admin',
           });
         } else {
           this.setState({
@@ -51,6 +51,19 @@ class FormAdmin extends React.Component {
         }
       });
     });
+  }
+
+  async componentDidMount() {
+    let id = this.props.navigation.getParam('id', 0);
+    const dt = await AsyncStorage.getItem('dt');
+    const data = JSON.parse(dt);
+    // console.warn('data.id', data.id);
+    // console.warn('id', id);
+    if (data.id === id) {
+      this.setState({judul: 'Edit Profil'});
+    } else {
+      this.setState({judul: 'Update Admin'});
+    }
   }
 
   showpass() {

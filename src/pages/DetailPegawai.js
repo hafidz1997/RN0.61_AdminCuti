@@ -174,7 +174,7 @@ class DetailPegawai extends React.Component {
             color="#779DCA"
             icon="md-create"
             onPress={() =>
-              this.props.navigation.navigate('TambahPegawai', {
+              this.props.navigation.navigate('FormPegawai', {
                 id: this.state.pegawai.id,
               })
             }

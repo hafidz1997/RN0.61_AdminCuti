@@ -119,7 +119,7 @@ class Pegawai extends React.Component {
         <View style={{flex: 1}}>
           {tampilan}
           <AddButton
-            onPress={() => this.props.navigation.navigate('TambahPegawai')}
+            onPress={() => this.props.navigation.navigate('FormPegawai')}
           />
         </View>
       </>
