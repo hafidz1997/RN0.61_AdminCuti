@@ -26,6 +26,7 @@ class FormCuti extends React.Component {
       alasan: '',
       awal: '',
       akhir: '',
+      thisDay: new Date(),
     };
     let id = this.props.navigation.getParam('id', 0);
     let idp = this.props.navigation.getParam('idp', 0);
@@ -260,6 +261,7 @@ class FormCuti extends React.Component {
               mode="date"
               placeholder="Select Date"
               format="YYYY-MM-DD"
+              minDate={this.state.thisDay}
               confirmBtnText="Confirm"
               cancelBtnText="Cancel"
               customStyles={{

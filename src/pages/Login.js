@@ -2,45 +2,10 @@ import React from 'react';
 import {StyleSheet, Text, TextInput, View, ToastAndroid} from 'react-native';
 import Button from '../components/Button';
 import {openDatabase} from 'react-native-sqlite-storage';
-let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
 import AsyncStorage from '@react-native-community/async-storage';
-import Icon from 'react-native-vector-icons/Ionicons';
+import CheckBox from '@react-native-community/checkbox';
 
-const style = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  icon: {
-    width: 25,
-    justifyContent: 'center',
-    alignContent: 'center',
-    lineHeight: 50,
-    height: 50,
-    marginTop: 20,
-  },
-  judul: {
-    fontSize: 25,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    margin: 20,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginLeft: 20,
-  },
-  input: {
-    borderColor: 'grey',
-    borderWidth: 1,
-    margin: 20,
-  },
-  kosong: {
-    fontSize: 20,
-    color: 'grey',
-    alignSelf: 'center',
-    marginTop: '50%',
-  },
-});
+let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
 
 class Login extends React.Component {
   constructor(props) {
@@ -48,15 +13,15 @@ class Login extends React.Component {
     this.state = {
       email: '',
       password: '',
-      icon: 'md-eye-off',
       pass: true,
+      checked: false,
     };
   }
 
   showpass() {
     this.setState(prevState => ({
-      icon: prevState.icon === 'md-eye' ? 'md-eye-off' : 'md-eye',
       pass: !prevState.pass,
+      checked: !prevState.checked,
     }));
   }
 
@@ -65,8 +30,8 @@ class Login extends React.Component {
     const {email, password} = this.state;
     if (email) {
       if (password) {
-        db.transaction(tx => {
-          tx.executeSql(
+        db.transaction(txn => {
+          txn.executeSql(
             'SELECT * FROM admin WHERE email = ? AND password = ?',
             [email, password],
             (tx, results) => {
@@ -120,20 +85,19 @@ class Login extends React.Component {
           keyboardType="email-address"
         />
         <Text style={style.label}>Password</Text>
-        <View style={{flexDirection: 'row'}}>
-          <TextInput
-            secureTextEntry={this.state.pass}
-            placeholder="Masukkan Password"
-            style={[style.input, {width: '85%'}]}
-            onChangeText={password => this.setState({password})}
+        <TextInput
+          secureTextEntry={this.state.pass}
+          placeholder="Masukkan Password"
+          style={style.input}
+          onChangeText={password => this.setState({password})}
+        />
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <CheckBox
+            style={{marginLeft: 15}}
+            value={this.state.checked}
+            onChange={() => this.showpass()}
           />
-          <Icon
-            name={this.state.icon}
-            onPress={() => this.showpass()}
-            size={25}
-            color="black"
-            style={style.icon}
-          />
+          <Text>Show Password</Text>
         </View>
         <Button
           title="Login"
@@ -147,5 +111,41 @@ class Login extends React.Component {
     );
   }
 }
+
+const style = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  icon: {
+    width: 25,
+    justifyContent: 'center',
+    alignContent: 'center',
+    lineHeight: 50,
+    height: 50,
+    marginTop: 20,
+  },
+  judul: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    margin: 20,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 20,
+  },
+  input: {
+    borderColor: 'grey',
+    borderWidth: 1,
+    margin: 20,
+  },
+  kosong: {
+    fontSize: 20,
+    color: 'grey',
+    alignSelf: 'center',
+    marginTop: '50%',
+  },
+});
 
 export default Login;

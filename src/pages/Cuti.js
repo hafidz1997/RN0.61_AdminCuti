@@ -44,11 +44,6 @@ const style = StyleSheet.create({
   },
 });
 
-let radio_props = [
-  {label: 'Pria', value: 'Pria'},
-  {label: 'Wanita', value: 'Wanita'},
-];
-
 class Cuti extends React.Component {
   constructor(props) {
     super(props);
@@ -61,8 +56,8 @@ class Cuti extends React.Component {
       alamat: '',
       jk: '',
     };
-    db.transaction(tx => {
-      tx.executeSql('SELECT * FROM pegawai', [], (tx, results) => {
+    db.transaction(txn => {
+      txn.executeSql('SELECT * FROM pegawai', [], (tx, results) => {
         let temp = [];
         for (let i = 0; i < results.rows.length; ++i) {
           temp.push(results.rows.item(i));
@@ -77,8 +72,8 @@ class Cuti extends React.Component {
   componentDidMount() {
     const {navigation} = this.props;
     this.focusListener = navigation.addListener('didFocus', () => {
-      db.transaction(tx => {
-        tx.executeSql(
+      db.transaction(txn => {
+        txn.executeSql(
           'SELECT pegawai.id AS id, depan, belakang, 5-sum(julianday(cuti.akhir)-julianday(cuti.awal)) AS sisa FROM pegawai LEFT JOIN cuti ON cuti.id_pegawai = pegawai.id GROUP BY pegawai.id ORDER BY COUNT(cuti.id_pegawai) DESC',
           [],
           (tx, results) => {
@@ -127,10 +122,6 @@ class Cuti extends React.Component {
         <View style={{flex: 1}}>{tampilan}</View>
       </>
     );
-  }
-
-  openModal() {
-    this.refs.Modal.open();
   }
 }
 

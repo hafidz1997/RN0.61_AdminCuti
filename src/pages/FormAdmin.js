@@ -11,13 +11,16 @@ import {
 import HeaderDetail from '../components/HeaderDetail';
 import Button from '../components/Button';
 import {openDatabase} from 'react-native-sqlite-storage';
-let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
-import Icon from 'react-native-vector-icons/Ionicons';
 import {ActionSheet, Root} from 'native-base';
 import ImagePicker from 'react-native-image-crop-picker';
 import AsyncStorage from '@react-native-community/async-storage';
+import CheckBox from '@react-native-community/checkbox';
+
+let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
 
 class FormAdmin extends React.Component {
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -27,7 +30,7 @@ class FormAdmin extends React.Component {
       email: '',
       password: '',
       judul: '',
-      icon: 'md-eye-off',
+      checked: false,
       pass: true,
       foto: null,
     };
@@ -54,11 +57,10 @@ class FormAdmin extends React.Component {
   }
 
   async componentDidMount() {
+    this._isMounted = true;
     let id = this.props.navigation.getParam('id', 0);
     const dt = await AsyncStorage.getItem('dt');
     const data = JSON.parse(dt);
-    // console.warn('data.id', data.id);
-    // console.warn('id', id);
     if (data.id === id) {
       this.setState({judul: 'Edit Profil'});
     } else {
@@ -68,8 +70,8 @@ class FormAdmin extends React.Component {
 
   showpass() {
     this.setState(prevState => ({
-      icon: prevState.icon === 'md-eye' ? 'md-eye-off' : 'md-eye',
       pass: !prevState.pass,
+      checked: !prevState.checked,
     }));
   }
 
@@ -264,20 +266,19 @@ class FormAdmin extends React.Component {
       tampilan = (
         <>
           <Text style={style.label}>Password</Text>
-          <View style={{flexDirection: 'row'}}>
-            <TextInput
-              secureTextEntry={this.state.pass}
-              placeholder="Masukkan Password"
-              style={[style.input, {width: '85%'}]}
-              onChangeText={password => this.setState({password})}
+          <TextInput
+            secureTextEntry={this.state.pass}
+            placeholder="Masukkan Password"
+            style={style.input}
+            onChangeText={password => this.setState({password})}
+          />
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <CheckBox
+              style={{marginLeft: 15}}
+              value={this.state.checked}
+              onChange={() => this.showpass()}
             />
-            <Icon
-              name={this.state.icon}
-              onPress={() => this.showpass()}
-              size={25}
-              color="black"
-              style={style.icon}
-            />
+            <Text>Show Password</Text>
           </View>
           <Button
             title="Simpan"

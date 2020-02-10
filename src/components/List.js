@@ -46,7 +46,11 @@ const List = props => {
       />
     );
   } else if (props.cuti >= 0) {
-    tampil = <Text style={style.email}>sisa {props.cuti} hari</Text>;
+    if (props.cuti !== null) {
+      tampil = <Text style={style.email}>sisa {props.cuti} hari</Text>;
+    } else {
+      tampil = <Text style={style.email}>sisa 5 hari</Text>;
+    }
     tombol = (
       <Button
         color="#779DCA"

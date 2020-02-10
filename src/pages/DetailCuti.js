@@ -4,19 +4,16 @@ import {
   StyleSheet,
   View,
   Text,
-  ScrollView,
-  TextInput,
   Alert,
   FlatList,
   ToastAndroid,
 } from 'react-native';
 import HeaderDetail from '../components/HeaderDetail';
 import Button from '../components/Button';
-import Modal from 'react-native-modalbox';
 import {openDatabase} from 'react-native-sqlite-storage';
 import AddButton from '../components/AddButton';
 import List from '../components/List';
-import DatePicker from 'react-native-datepicker';
+
 let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
 
 class DetailCuti extends React.Component {
@@ -39,8 +36,8 @@ class DetailCuti extends React.Component {
       id: id,
     });
     // console.warn(id);
-    db.transaction(tx => {
-      tx.executeSql(
+    db.transaction(txn => {
+      txn.executeSql(
         `SELECT
             depan,
             belakang,
@@ -72,14 +69,14 @@ class DetailCuti extends React.Component {
               idp: results.rows.item(0).id_pegawai,
             });
           } else if (len === 0) {
-            db.transaction(tx => {
-              tx.executeSql(
+            db.transaction(txn2 => {
+              txn2.executeSql(
                 'SELECT * FROM pegawai where id = ?',
                 [id],
-                (tx, results) => {
+                (tx2, results) => {
                   let len = results.rows.length;
                   console.log('len', len);
-                  if (len != 0) {
+                  if (len !== 0) {
                     this.setState({
                       cuti: '',
                       depan: results.rows.item(0).depan,
@@ -218,7 +215,7 @@ class DetailCuti extends React.Component {
                   (tx, results) => {
                     let len = results.rows.length;
                     console.log('len', len);
-                    if (len != 0) {
+                    if (len !== 0) {
                       this.setState({
                         cuti: '',
                         depan: results.rows.item(0).depan,
@@ -328,14 +325,6 @@ class DetailCuti extends React.Component {
 }
 
 const style = StyleSheet.create({
-  modalContainer: {
-    // justifyContent: 'center',
-    borderRadius: 8,
-    shadowRadius: 10,
-    width: '90%',
-    height: 300,
-    padding: 10,
-  },
   judul: {
     fontSize: 25,
     fontWeight: 'bold',
