@@ -79,7 +79,7 @@ class Cuti extends React.Component {
     this.focusListener = navigation.addListener('didFocus', () => {
       db.transaction(tx => {
         tx.executeSql(
-          'SELECT pegawai.id AS id, depan, belakang, 5-COUNT(cuti.id_pegawai) AS sisa FROM pegawai LEFT JOIN cuti ON cuti.id_pegawai = pegawai.id GROUP BY pegawai.id ORDER BY COUNT(cuti.id_pegawai) DESC',
+          'SELECT pegawai.id AS id, depan, belakang, 5-sum(julianday(cuti.akhir)-julianday(cuti.awal)) AS sisa FROM pegawai LEFT JOIN cuti ON cuti.id_pegawai = pegawai.id GROUP BY pegawai.id ORDER BY COUNT(cuti.id_pegawai) DESC',
           [],
           (tx, results) => {
             let temp = [];

@@ -35,6 +35,7 @@ const Button = props => {
         {
           backgroundColor: props.color,
           width: props.width,
+          height: props.height,
           alignSelf: props.alignSelf,
         },
       ]}>

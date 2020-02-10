@@ -1,7 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-// import CheckBox from '@react-native-community/checkbox';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import {StyleSheet, Text, View} from 'react-native';
 import Button from './Button';
 
 const style = StyleSheet.create({
@@ -47,7 +45,7 @@ const List = props => {
         width={50}
       />
     );
-  } else if (props.cuti) {
+  } else if (props.cuti >= 0) {
     tampil = <Text style={style.email}>sisa {props.cuti} hari</Text>;
     tombol = (
       <Button
@@ -59,9 +57,11 @@ const List = props => {
     );
   } else if (props.awal) {
     tampil = (
-      <Text style={style.email}>
-        {props.awal}-{props.akhir}
-      </Text>
+      <>
+        <Text style={style.email}>{props.hari} hari</Text>
+        <Text style={style.email}>Mulai: {props.awal}</Text>
+        <Text style={style.email}>Berakhir: {props.akhir}</Text>
+      </>
     );
     tombol = (
       <View style={{flexDirection: 'row'}}>
@@ -70,12 +70,14 @@ const List = props => {
           icon="ios-trash"
           onPress={props.hapus}
           width={40}
+          height={40}
         />
         <Button
           color="#779DCA"
           icon="md-create"
           onPress={props.update}
           width={40}
+          height={40}
         />
       </View>
     );

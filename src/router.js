@@ -15,6 +15,7 @@ import {
   Login,
   AuthLoading,
   Profil,
+  FormCuti,
 } from './pages';
 
 const AdminScreen = createStackNavigator(
@@ -67,6 +68,8 @@ const CutiScreen = createStackNavigator(
   {
     Cuti,
     DetailCuti,
+    FormCuti,
+    DetailPegawai,
   },
   {
     headerMode: 'none',
@@ -85,12 +88,34 @@ CutiScreen.navigationOptions = ({navigation}) => {
   };
 };
 
+const ProfilScreen = createStackNavigator(
+  {
+    Profil,
+    FormAdmin,
+  },
+  {
+    headerMode: 'none',
+    initialRouteName: 'Profil',
+  },
+);
+
+ProfilScreen.navigationOptions = ({navigation}) => {
+  let tabBarVisible = true;
+  if (navigation.state.index > 0) {
+    tabBarVisible = false;
+  }
+
+  return {
+    tabBarVisible,
+  };
+};
+
 const Tab = createBottomTabNavigator(
   {
     Admin: AdminScreen,
     Pegawai: PegawaiScreen,
     Cuti: CutiScreen,
-    Profil: Profil,
+    Profil: ProfilScreen,
   },
   {
     defaultNavigationOptions: ({navigation}) => ({

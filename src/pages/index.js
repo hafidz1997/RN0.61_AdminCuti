@@ -8,6 +8,7 @@ import DetailPegawai from './DetailPegawai';
 import FormPegawai from './FormPegawai';
 import Cuti from './Cuti';
 import DetailCuti from './DetailCuti';
+import FormCuti from './FormCuti';
 import Profil from './Profil';
 
 export {
@@ -21,5 +22,6 @@ export {
   FormPegawai,
   Cuti,
   DetailCuti,
+  FormCuti,
   Profil,
 };
