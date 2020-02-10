@@ -12,6 +12,7 @@ import Button from '../components/Button';
 import {openDatabase} from 'react-native-sqlite-storage';
 let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
 import DatePicker from 'react-native-datepicker';
+import moment from 'moment';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 class FormCuti extends React.Component {
@@ -27,6 +28,7 @@ class FormCuti extends React.Component {
       awal: '',
       akhir: '',
       thisDay: new Date(),
+      sisa: '',
     };
     let id = this.props.navigation.getParam('id', 0);
     let idp = this.props.navigation.getParam('idp', 0);
@@ -35,13 +37,17 @@ class FormCuti extends React.Component {
         `SELECT
             depan,
             belakang,
-            cuti.*
+            cuti.*,
+            (SELECT
+              5 - sum(julianday(cuti.akhir)-julianday(cuti.awal)) FROM
+                    pegawai JOIN cuti ON cuti.id_pegawai = pegawai.id
+              WHERE pegawai.id = ?) AS sisa
         FROM
             pegawai
         JOIN cuti ON
             cuti.id_pegawai = pegawai.id
         WHERE pegawai.id = ? AND cuti.id = ?`,
-        [idp, id],
+        [idp, idp, id],
         (tx, results) => {
           let len = results.rows.length;
           if (len !== 0) {
@@ -54,6 +60,7 @@ class FormCuti extends React.Component {
               id: results.rows.item(0).id,
               depan: results.rows.item(0).depan,
               belakang: results.rows.item(0).belakang,
+              sisa: results.rows.item(0).sisa,
               awal: results.rows.item(0).awal,
               akhir: results.rows.item(0).akhir,
               alasan: results.rows.item(0).alasan,
@@ -63,13 +70,26 @@ class FormCuti extends React.Component {
           } else if (len === 0) {
             db.transaction(tx => {
               tx.executeSql(
-                'SELECT * FROM pegawai where id = ?',
-                [idp],
+                `SELECT
+                depan,
+                belakang,
+                cuti.*,
+                (SELECT
+                  5 - sum(julianday(cuti.akhir)-julianday(cuti.awal)) FROM
+                        pegawai JOIN cuti ON cuti.id_pegawai = pegawai.id
+                  WHERE pegawai.id = ?) AS sisa
+            FROM
+                pegawai
+            JOIN cuti ON
+                cuti.id_pegawai = pegawai.id
+            WHERE pegawai.id = ?`,
+                [idp, idp],
                 (tx, results) => {
                   this.setState({
                     cuti: [],
                     depan: results.rows.item(0).depan,
                     belakang: results.rows.item(0).belakang,
+                    sisa: results.rows.item(0).sisa,
                     judul: 'Tambah Cuti',
                   });
                 },
@@ -245,6 +265,18 @@ class FormCuti extends React.Component {
         />
       );
     }
+    let {sisa, judul, awal, akhir} = this.state;
+    let max;
+    if (judul === 'Tambah Cuti') {
+      max = moment(awal)
+        .add(sisa, 'day')
+        .format('YYYY-MM-DD');
+    } else if (judul === 'Update Cuti') {
+      max = moment(akhir)
+        .add(sisa, 'day')
+        .format('YYYY-MM-DD');
+    }
+    // console.warn(max);
     return (
       <>
         <HeaderDetail
@@ -253,7 +285,9 @@ class FormCuti extends React.Component {
         />
         <View style={{flex: 1, backgroundColor: 'white'}}>
           <ScrollView>
-            <Text style={style.judul}>{this.state.judul}</Text>
+            <Text style={style.judul}>
+              {this.state.judul} {this.state.depan} {this.state.belakang}
+            </Text>
             <Text style={style.label}>Tanggal Mulai</Text>
             <DatePicker
               style={{width: 200, margin: 15}}
@@ -286,6 +320,8 @@ class FormCuti extends React.Component {
               mode="date"
               placeholder="Select Date"
               format="YYYY-MM-DD"
+              minDate={this.state.awal}
+              maxDate={max}
               confirmBtnText="Confirm"
               cancelBtnText="Cancel"
               customStyles={{

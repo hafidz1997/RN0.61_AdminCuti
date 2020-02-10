@@ -29,7 +29,7 @@ class DetailCuti extends React.Component {
       awal: new Date(),
       akhir: new Date(),
       hari: '',
-      jml: 0,
+      sisa: 5,
     };
     let id = this.props.navigation.getParam('id', 0);
     this.setState({
@@ -44,9 +44,9 @@ class DetailCuti extends React.Component {
             cuti.*,
             julianday(cuti.akhir)-julianday(cuti.awal) AS hari,
             (SELECT
-              sum(julianday(cuti.akhir)-julianday(cuti.awal)) FROM
+              5 - sum(julianday(cuti.akhir)-julianday(cuti.awal)) FROM
                     pegawai JOIN cuti ON cuti.id_pegawai = pegawai.id
-              WHERE pegawai.id = ?) AS jml
+              WHERE pegawai.id = ?) AS sisa
         FROM
             pegawai
         JOIN cuti ON
@@ -65,7 +65,7 @@ class DetailCuti extends React.Component {
               id: results.rows.item(0).id,
               depan: results.rows.item(0).depan,
               belakang: results.rows.item(0).belakang,
-              jml: results.rows.item(0).jml,
+              sisa: results.rows.item(0).sisa,
               idp: results.rows.item(0).id_pegawai,
             });
           } else if (len === 0) {
@@ -115,19 +115,24 @@ class DetailCuti extends React.Component {
     db.transaction(tx => {
       tx.executeSql('DELETE FROM cuti where id=?', [id], (tx, results) => {
         if (results.rowsAffected > 0) {
-          let idp = this.state.idp;
+          let id = this.props.navigation.getParam('id', 0);
           db.transaction(tx => {
             tx.executeSql(
               `SELECT
-                    depan,
-                    belakang,
-                    cuti.*
-                FROM
-                    pegawai
-                JOIN cuti ON
-                    cuti.id_pegawai = pegawai.id
-                WHERE pegawai.id = ?`,
-              [idp],
+              depan,
+              belakang,
+              cuti.*,
+              julianday(cuti.akhir)-julianday(cuti.awal) AS hari,
+              (SELECT
+                5 - sum(julianday(cuti.akhir)-julianday(cuti.awal)) FROM
+                      pegawai JOIN cuti ON cuti.id_pegawai = pegawai.id
+                WHERE pegawai.id = ?) AS sisa
+          FROM
+              pegawai
+          JOIN cuti ON
+              cuti.id_pegawai = pegawai.id
+          WHERE pegawai.id = ?`,
+              [id, id],
               (tx, results) => {
                 let len = results.rows.length;
                 if (len > 0) {
@@ -140,6 +145,7 @@ class DetailCuti extends React.Component {
                     id: results.rows.item(0).id,
                     depan: results.rows.item(0).depan,
                     belakang: results.rows.item(0).belakang,
+                    sisa: results.rows.item(0).sisa,
                     idp: results.rows.item(0).id_pegawai,
                   });
                 } else {
@@ -183,9 +189,9 @@ class DetailCuti extends React.Component {
               cuti.*,
               julianday(cuti.akhir)-julianday(cuti.awal) AS hari,
               (SELECT
-                sum(julianday(cuti.akhir)-julianday(cuti.awal)) FROM
+                5 - sum(julianday(cuti.akhir)-julianday(cuti.awal)) FROM
                       pegawai JOIN cuti ON cuti.id_pegawai = pegawai.id
-                WHERE pegawai.id = ?) AS jml
+                WHERE pegawai.id = ?) AS sisa
           FROM
               pegawai
           JOIN cuti ON
@@ -204,7 +210,7 @@ class DetailCuti extends React.Component {
                 id: results.rows.item(0).id,
                 depan: results.rows.item(0).depan,
                 belakang: results.rows.item(0).belakang,
-                jml: results.rows.item(0).jml,
+                sisa: results.rows.item(0).sisa,
                 idp: results.rows.item(0).id_pegawai,
               });
             } else if (len === 0) {
@@ -250,8 +256,8 @@ class DetailCuti extends React.Component {
     let tampilan;
     let button;
     let maks;
-    // console.warn(this.state.jml);
-    if (this.state.jml < 5) {
+    // console.warn(this.state.sisa);
+    if (this.state.sisa > 0) {
       button = (
         <AddButton
           onPress={() =>
@@ -261,8 +267,6 @@ class DetailCuti extends React.Component {
           }
         />
       );
-    } else {
-      maks = <Text style={style.kosong}>(Cuti Sudah Maksimum)</Text>;
     }
     if (this.state.cuti) {
       tampilan = (
@@ -312,9 +316,9 @@ class DetailCuti extends React.Component {
               })
             }
           />
-          <View style={{flexDirection: 'row'}}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text style={style.judul2}>List Cuti</Text>
-            {maks}
+            <Text style={style.kosong}>(sisa {this.state.sisa} hari)</Text>
           </View>
           {tampilan}
         </SafeAreaView>
