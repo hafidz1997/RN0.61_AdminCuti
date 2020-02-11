@@ -24,29 +24,33 @@ class DetailAdmin extends React.Component {
       foto: '',
     };
     let id = this.props.navigation.getParam('id', 0);
-    db.transaction(tx => {
-      tx.executeSql('SELECT * FROM admin where id = ?', [id], (tx, results) => {
-        let len = results.rows.length;
-        console.log('len', len);
-        if (len > 0) {
-          this.setState({
-            admin: results.rows.item(0),
-            depan: results.rows.item(0).depan,
-            belakang: results.rows.item(0).belakang,
-            email: results.rows.item(0).email,
-            foto: results.rows.item(0).foto,
-          });
-        } else {
-          ToastAndroid.showWithGravity(
-            'No user found',
-            ToastAndroid.LONG,
-            ToastAndroid.CENTER,
-          );
-          this.setState({
-            admin: '',
-          });
-        }
-      });
+    db.transaction(txn => {
+      txn.executeSql(
+        'SELECT * FROM admin where id = ?',
+        [id],
+        (tx, results) => {
+          let len = results.rows.length;
+          console.log('len', len);
+          if (len > 0) {
+            this.setState({
+              admin: results.rows.item(0),
+              depan: results.rows.item(0).depan,
+              belakang: results.rows.item(0).belakang,
+              email: results.rows.item(0).email,
+              foto: results.rows.item(0).foto,
+            });
+          } else {
+            ToastAndroid.showWithGravity(
+              'No user found',
+              ToastAndroid.LONG,
+              ToastAndroid.CENTER,
+            );
+            this.setState({
+              admin: '',
+            });
+          }
+        },
+      );
     });
   }
 
@@ -127,7 +131,7 @@ class DetailAdmin extends React.Component {
           title="Detail Admin"
           onPress={() => this.props.navigation.pop()}
         />
-        <ScrollView style={{padding: 10}}>
+        <ScrollView style={style.padding}>
           {foto && <Image source={{uri: foto}} style={style.foto} />}
           <Text style={style.judul2}>Nama Depan</Text>
           <Text style={style.isi}>{this.state.admin.depan}</Text>
@@ -139,7 +143,7 @@ class DetailAdmin extends React.Component {
           <Text style={style.isi}>{this.state.admin.email}</Text>
           <View style={style.garis} />
         </ScrollView>
-        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+        <View style={style.row}>
           <Button
             title="Hapus"
             color="tomato"
@@ -163,13 +167,10 @@ class DetailAdmin extends React.Component {
 }
 
 const style = StyleSheet.create({
-  modalContainer: {
-    // justifyContent: 'center',
-    borderRadius: 8,
-    shadowRadius: 10,
-    width: '90%',
-    height: 300,
-    padding: 10,
+  padding: {padding: 10},
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   judul: {
     fontSize: 25,

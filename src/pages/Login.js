@@ -91,9 +91,9 @@ class Login extends React.Component {
           style={style.input}
           onChangeText={password => this.setState({password})}
         />
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View style={style.row}>
           <CheckBox
-            style={{marginLeft: 15}}
+            style={style.marginLeft}
             value={this.state.checked}
             onChange={() => this.showpass()}
           />
@@ -113,6 +113,8 @@ class Login extends React.Component {
 }
 
 const style = StyleSheet.create({
+  marginLeft: {marginLeft: 15},
+  row: {flexDirection: 'row', alignItems: 'center'},
   container: {
     flex: 1,
   },

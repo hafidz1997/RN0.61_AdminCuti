@@ -85,13 +85,21 @@ class FormCuti extends React.Component {
             WHERE pegawai.id = ?`,
                 [idp, idp],
                 (tx, results) => {
-                  this.setState({
-                    cuti: [],
-                    depan: results.rows.item(0).depan,
-                    belakang: results.rows.item(0).belakang,
-                    sisa: results.rows.item(0).sisa,
-                    judul: 'Tambah Cuti',
-                  });
+                  let len = results.rows.length;
+                  if (len !== 0) {
+                    this.setState({
+                      cuti: [],
+                      depan: results.rows.item(0).depan,
+                      belakang: results.rows.item(0).belakang,
+                      sisa: results.rows.item(0).sisa,
+                      judul: 'Tambah Cuti',
+                    });
+                  } else {
+                    this.setState({
+                      judul: 'Tambah Cuti',
+                      sisa: 5,
+                    });
+                  }
                 },
               );
             });

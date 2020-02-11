@@ -5,45 +5,6 @@ import List from '../components/List';
 import {openDatabase} from 'react-native-sqlite-storage';
 let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
 
-const style = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  modalContainer: {
-    // justifyContent: 'center',
-    borderRadius: 8,
-    shadowRadius: 10,
-    width: '90%',
-    height: 300,
-    padding: 10,
-  },
-  judul: {
-    fontSize: 25,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    margin: 20,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginLeft: 20,
-  },
-  input: {
-    borderColor: 'grey',
-    borderWidth: 1,
-    margin: 20,
-  },
-  radio: {
-    margin: 20,
-  },
-  kosong: {
-    fontSize: 20,
-    color: 'grey',
-    alignSelf: 'center',
-    marginTop: '50%',
-  },
-});
-
 class Cuti extends React.Component {
   constructor(props) {
     super(props);
@@ -119,10 +80,41 @@ class Cuti extends React.Component {
     return (
       <>
         <Header title="List Cuti Pegawai" />
-        <View style={{flex: 1}}>{tampilan}</View>
+        <View style={style.container}>{tampilan}</View>
       </>
     );
   }
 }
+
+const style = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  judul: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    margin: 20,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 20,
+  },
+  input: {
+    borderColor: 'grey',
+    borderWidth: 1,
+    margin: 20,
+  },
+  radio: {
+    margin: 20,
+  },
+  kosong: {
+    fontSize: 20,
+    color: 'grey',
+    alignSelf: 'center',
+    marginTop: '50%',
+  },
+});
 
 export default Cuti;

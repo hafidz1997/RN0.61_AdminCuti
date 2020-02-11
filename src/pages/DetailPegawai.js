@@ -142,7 +142,7 @@ class DetailPegawai extends React.Component {
           title="Detail Pegawai"
           onPress={() => this.props.navigation.pop()}
         />
-        <ScrollView style={{padding: 10}}>
+        <ScrollView style={style.padding}>
           <Text style={style.judul2}>Nama Depan</Text>
           <Text style={style.isi}>{this.state.pegawai.depan}</Text>
           <View style={style.garis} />
@@ -162,7 +162,7 @@ class DetailPegawai extends React.Component {
           <Text style={style.isi}>{jk}</Text>
           <View style={style.garis} />
         </ScrollView>
-        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+        <View style={style.row}>
           <Button
             title="Hapus"
             color="tomato"
@@ -186,14 +186,8 @@ class DetailPegawai extends React.Component {
 }
 
 const style = StyleSheet.create({
-  modalContainer: {
-    // justifyContent: 'center',
-    borderRadius: 8,
-    shadowRadius: 10,
-    width: '90%',
-    height: 300,
-    padding: 10,
-  },
+  row: {flexDirection: 'row', justifyContent: 'center'},
+  padding: {padding: 10},
   judul: {
     fontSize: 25,
     fontWeight: 'bold',

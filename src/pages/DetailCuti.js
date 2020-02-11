@@ -32,10 +32,9 @@ class DetailCuti extends React.Component {
       sisa: 5,
     };
     let id = this.props.navigation.getParam('id', 0);
-    this.setState({
-      id: id,
-    });
-    // console.warn(id);
+    // this.setState({
+    //   id: id,
+    // });
     db.transaction(txn => {
       txn.executeSql(
         `SELECT
@@ -73,15 +72,15 @@ class DetailCuti extends React.Component {
               txn2.executeSql(
                 'SELECT * FROM pegawai where id = ?',
                 [id],
-                (tx2, results) => {
-                  let len = results.rows.length;
-                  console.log('len', len);
-                  if (len !== 0) {
+                (tx2, res) => {
+                  let len2 = res.rows.length;
+                  console.log('len2', len2);
+                  if (len2 !== 0) {
                     this.setState({
                       cuti: '',
-                      depan: results.rows.item(0).depan,
-                      belakang: results.rows.item(0).belakang,
-                      idp: results.rows.item(0).id,
+                      depan: res.rows.item(0).depan,
+                      belakang: res.rows.item(0).belakang,
+                      idp: res.rows.item(0).id,
                     });
                   } else {
                     ToastAndroid.showWithGravity(
@@ -111,7 +110,6 @@ class DetailCuti extends React.Component {
 
   deletecuti = id => {
     let that = this;
-    // console.warn(id);
     db.transaction(tx => {
       tx.executeSql('DELETE FROM cuti where id=?', [id], (tx, results) => {
         if (results.rowsAffected > 0) {
@@ -255,8 +253,6 @@ class DetailCuti extends React.Component {
   render() {
     let tampilan;
     let button;
-    let maks;
-    // console.warn(this.state.sisa);
     if (this.state.sisa > 0) {
       button = (
         <AddButton
@@ -300,7 +296,7 @@ class DetailCuti extends React.Component {
           title="Detail Cuti Pegawai"
           onPress={() => this.props.navigation.pop()}
         />
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={style.container}>
           <Text style={style.judul2}>Nama Pegawai</Text>
           <Text style={style.isi}>
             {this.state.depan} {this.state.belakang}
@@ -316,7 +312,7 @@ class DetailCuti extends React.Component {
               })
             }
           />
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={style.row}>
             <Text style={style.judul2}>List Cuti</Text>
             <Text style={style.kosong}>(sisa {this.state.sisa} hari)</Text>
           </View>
@@ -329,6 +325,10 @@ class DetailCuti extends React.Component {
 }
 
 const style = StyleSheet.create({
+  row: {flexDirection: 'row', alignItems: 'center'},
+  container: {
+    flex: 1,
+  },
   judul: {
     fontSize: 25,
     fontWeight: 'bold',

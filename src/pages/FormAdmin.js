@@ -272,9 +272,9 @@ class FormAdmin extends React.Component {
             style={style.input}
             onChangeText={password => this.setState({password})}
           />
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={style.row}>
             <CheckBox
-              style={{marginLeft: 15}}
+              style={style.marginLeft}
               value={this.state.checked}
               onChange={() => this.showpass()}
             />
@@ -296,7 +296,7 @@ class FormAdmin extends React.Component {
           title={this.state.judul}
           onPress={() => this.props.navigation.pop()}
         />
-        <View style={{flex: 1, backgroundColor: 'white'}}>
+        <View style={style.container}>
           <ScrollView>
             <Text style={style.judul}>{this.state.judul}</Text>
             <Text style={style.label}>Nama Depan</Text>
@@ -341,14 +341,10 @@ class FormAdmin extends React.Component {
 const style = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
-  modalContainer: {
-    borderRadius: 8,
-    shadowRadius: 10,
-    width: '90%',
-    height: 300,
-    padding: 10,
-  },
+  row: {flexDirection: 'row', alignItems: 'center'},
+  marginLeft: {marginLeft: 15},
   judul: {
     fontSize: 25,
     fontWeight: 'bold',

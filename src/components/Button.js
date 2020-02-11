@@ -2,26 +2,6 @@ import React from 'react';
 import {StyleSheet, TouchableOpacity, Text} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const style = StyleSheet.create({
-  button: {
-    borderRadius: 8,
-    padding: 10,
-    margin: 10,
-    marginLeft: 20,
-    flexDirection: 'row',
-    alignSelf: 'flex-start',
-    justifyContent: 'center',
-  },
-  text: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  icon: {
-    marginRight: 5,
-  },
-});
-
 const Button = props => {
   let tampil;
   if (props.title) {
@@ -44,5 +24,25 @@ const Button = props => {
     </TouchableOpacity>
   );
 };
+
+const style = StyleSheet.create({
+  button: {
+    borderRadius: 8,
+    padding: 10,
+    margin: 10,
+    marginLeft: 20,
+    flexDirection: 'row',
+    alignSelf: 'flex-start',
+    justifyContent: 'center',
+  },
+  text: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  icon: {
+    marginRight: 5,
+  },
+});
 
 export default Button;

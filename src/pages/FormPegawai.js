@@ -240,7 +240,7 @@ class TambahPegawai extends React.Component {
           title={this.state.judul}
           onPress={() => this.props.navigation.pop()}
         />
-        <View style={{flex: 1, backgroundColor: 'white'}}>
+        <View style={style.container}>
           <ScrollView>
             <Text style={style.judul}>{this.state.judul}</Text>
             <Text style={style.label}>Nama Depan</Text>
@@ -283,8 +283,8 @@ class TambahPegawai extends React.Component {
               onChangeText={alamat => this.setState({alamat})}
             />
             <Text style={style.label}>Jenis Kelamin</Text>
-            <View style={{flexDirection: 'row'}}>
-              <View style={{position: 'relative', margin: 20}}>
+            <View style={style.row}>
+              <View style={style.radio}>
                 <RadioButton
                   status={jk === 1 ? 'checked' : 'unchecked'}
                   onPress={() => {
@@ -292,17 +292,9 @@ class TambahPegawai extends React.Component {
                   }}
                   color="#779DCA"
                 />
-                <Text
-                  style={{
-                    fontSize: 15,
-                    position: 'absolute',
-                    left: 40,
-                    top: 5,
-                  }}>
-                  Pria
-                </Text>
+                <Text style={style.radioText}>Pria</Text>
               </View>
-              <View style={{position: 'relative', margin: 20}}>
+              <View style={style.radio}>
                 <RadioButton
                   status={jk === 2 ? 'checked' : 'unchecked'}
                   onPress={() => {
@@ -310,16 +302,7 @@ class TambahPegawai extends React.Component {
                   }}
                   color="#779DCA"
                 />
-                <Text
-                  style={{
-                    fontSize: 15,
-                    position: 'absolute',
-                    left: 40,
-                    top: 5,
-                    width: 100,
-                  }}>
-                  Wanita
-                </Text>
+                <Text style={style.radioText}>Wanita</Text>
               </View>
             </View>
             {tampilan}
@@ -331,8 +314,18 @@ class TambahPegawai extends React.Component {
 }
 
 const style = StyleSheet.create({
+  radioText: {
+    fontSize: 15,
+    position: 'absolute',
+    left: 40,
+    top: 5,
+    width: 100,
+  },
+  radio: {position: 'relative', margin: 20},
+  row: {flexDirection: 'row'},
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
   judul: {
     fontSize: 25,
@@ -348,9 +341,6 @@ const style = StyleSheet.create({
   input: {
     borderColor: 'grey',
     borderWidth: 1,
-    margin: 20,
-  },
-  radio: {
     margin: 20,
   },
   kosong: {

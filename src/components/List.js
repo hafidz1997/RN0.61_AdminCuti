@@ -2,36 +2,6 @@ import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import Button from './Button';
 
-const style = StyleSheet.create({
-  list: {
-    flexDirection: 'row',
-    backgroundColor: 'white',
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 5,
-    justifyContent: 'space-between',
-    padding: 10,
-    margin: 10,
-  },
-  nama: {
-    color: 'black',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  email: {
-    color: 'grey',
-    fontSize: 15,
-  },
-  detail: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#779DCA',
-    padding: 10,
-  },
-});
-
 const List = props => {
   let tampil;
   let tombol;
@@ -68,7 +38,7 @@ const List = props => {
       </>
     );
     tombol = (
-      <View style={{flexDirection: 'row'}}>
+      <View style={style.row}>
         <Button
           color="tomato"
           icon="ios-trash"
@@ -108,5 +78,38 @@ const List = props => {
     </View>
   );
 };
+
+const style = StyleSheet.create({
+  list: {
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+    justifyContent: 'space-between',
+    padding: 10,
+    margin: 10,
+  },
+  row: {
+    flexDirection: 'row',
+  },
+  nama: {
+    color: 'black',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  email: {
+    color: 'grey',
+    fontSize: 15,
+  },
+  detail: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#779DCA',
+    padding: 10,
+  },
+});
 
 export default List;

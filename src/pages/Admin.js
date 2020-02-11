@@ -7,18 +7,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {openDatabase} from 'react-native-sqlite-storage';
 let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
 
-const style = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  kosong: {
-    fontSize: 20,
-    color: 'grey',
-    alignSelf: 'center',
-    marginTop: '50%',
-  },
-});
-
 class Admin extends React.Component {
   constructor(props) {
     super(props);
@@ -30,14 +18,8 @@ class Admin extends React.Component {
       password: '',
       profil: [],
     };
-    // const dt = AsyncStorage.getItem('dt');
-    // // const data = JSON.parse(dt);
-    // console.warn(dt);
-    // // this.setState({
-    // //   profil: data,
-    // // });
-    db.transaction(tx => {
-      tx.executeSql('SELECT * FROM admin', [], (tx, results) => {
+    db.transaction(txn => {
+      txn.executeSql('SELECT * FROM admin', [], (tx, results) => {
         let temp = [];
         for (let i = 0; i < results.rows.length; ++i) {
           temp.push(results.rows.item(i));
@@ -52,11 +34,10 @@ class Admin extends React.Component {
   async componentDidMount() {
     const dt = await AsyncStorage.getItem('dt');
     this.setState({profil: JSON.parse(dt)});
-    // console.warn(this.state.profil);
     const {navigation} = this.props;
     this.focusListener = navigation.addListener('didFocus', () => {
-      db.transaction(tx => {
-        tx.executeSql('SELECT * FROM admin', [], (tx, results) => {
+      db.transaction(txn => {
+        txn.executeSql('SELECT * FROM admin', [], (tx, results) => {
           let temp = [];
           for (let i = 0; i < results.rows.length; ++i) {
             temp.push(results.rows.item(i));
@@ -75,8 +56,6 @@ class Admin extends React.Component {
 
   render() {
     let tampilan;
-    // console.warn('profil.id', this.state.profil.id);
-    // console.warn('id', id);
     if (this.state.admin.length !== 0) {
       tampilan = (
         <FlatList
@@ -114,5 +93,17 @@ class Admin extends React.Component {
     );
   }
 }
+
+const style = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  kosong: {
+    fontSize: 20,
+    color: 'grey',
+    alignSelf: 'center',
+    marginTop: '50%',
+  },
+});
 
 export default Admin;
