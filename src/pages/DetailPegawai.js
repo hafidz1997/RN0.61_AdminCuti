@@ -1,15 +1,9 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  ScrollView,
-  Alert,
-  ToastAndroid,
-} from 'react-native';
+import {StyleSheet, View, Text, ScrollView, Alert} from 'react-native';
 import HeaderDetail from '../components/HeaderDetail';
 import Button from '../components/Button';
 import {openDatabase} from 'react-native-sqlite-storage';
+import {ToastError, ToastSuccess} from '../helpers/function';
 
 let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
 
@@ -44,14 +38,7 @@ class DetailPegawai extends React.Component {
               jk: results.rows.item(0).jk,
             });
           } else {
-            ToastAndroid.showWithGravity(
-              'No user found',
-              ToastAndroid.LONG,
-              ToastAndroid.CENTER,
-            );
-            this.setState({
-              pegawai: '',
-            });
+            ToastError();
           }
         },
       );
@@ -71,18 +58,10 @@ class DetailPegawai extends React.Component {
     db.transaction(tx => {
       tx.executeSql('DELETE FROM pegawai where id=?', [id], (tx, results) => {
         if (results.rowsAffected > 0) {
-          ToastAndroid.showWithGravity(
-            'Pegawai berhasil dihapus',
-            ToastAndroid.LONG,
-            ToastAndroid.CENTER,
-          );
+          ToastSuccess('Pegawai', 'hapus');
           that.props.navigation.navigate('Pegawai');
         } else {
-          ToastAndroid.showWithGravity(
-            'Gagal',
-            ToastAndroid.LONG,
-            ToastAndroid.CENTER,
-          );
+          ToastError();
         }
       });
     });
@@ -110,14 +89,7 @@ class DetailPegawai extends React.Component {
                 jk: results.rows.item(0).jk,
               });
             } else {
-              ToastAndroid.showWithGravity(
-                'No user found',
-                ToastAndroid.LONG,
-                ToastAndroid.CENTER,
-              );
-              this.setState({
-                pegawai: '',
-              });
+              ToastError();
             }
           },
         );

@@ -1,28 +1,94 @@
 import React from 'react';
-import {StyleSheet, View, Text, ScrollView, Alert, Image} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  Alert,
+  Image,
+  RefreshControl,
+} from 'react-native';
 import Header from '../components/Header';
 import Button from '../components/Button';
 import AsyncStorage from '@react-native-community/async-storage';
+import {openDatabase} from 'react-native-sqlite-storage';
+import {ToastError} from '../helpers/function';
+
+let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
 
 class Profil extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       admin: '',
+      refreshing: false,
     };
+
+    this.getprofil();
   }
 
-  async componentDidMount() {
-    const dt = await AsyncStorage.getItem('dt');
-    this.setState({admin: JSON.parse(dt)});
+  componentDidMount() {
+    const {navigation} = this.props;
+    this.focusListener = navigation.addListener('didFocus', () => {
+      this.getprofil();
+    });
   }
+
+  async getprofil() {
+    const dt = await AsyncStorage.getItem('dt');
+    let dt2 = JSON.parse(dt);
+    let id = dt2.id;
+    db.transaction(txn => {
+      txn.executeSql(
+        'SELECT * FROM admin where id = ?',
+        [id],
+        (tx, results) => {
+          let len = results.rows.length;
+          if (len > 0) {
+            this.setState({
+              admin: results.rows.item(0),
+            });
+          } else {
+            ToastError();
+          }
+        },
+      );
+    });
+  }
+
+  componentWillUnmount() {
+    this.focusListener.remove();
+  }
+
+  _onRefresh = () => {
+    this.setState({refreshing: true});
+    this.getprofil().then(() => {
+      this.setState({refreshing: false});
+    });
+  };
 
   render() {
+    let foto;
+    // console.warn(this.state.admin.id);
+    if (this.state.admin.foto) {
+      foto = <Image source={{uri: this.state.admin.foto}} style={style.foto} />;
+    } else {
+      foto = (
+        <Image source={require('../assets/profil.png')} style={style.foto} />
+      );
+    }
     return (
       <>
         <Header title="Profil Saya" />
-        <ScrollView style={style.padding}>
-          <Image source={{uri: this.state.admin.foto}} style={style.foto} />
+        <ScrollView
+          style={style.padding}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh}
+            />
+          }>
+          {foto}
           <Text style={style.judul2}>Nama Depan</Text>
           <Text style={style.isi}>{this.state.admin.depan}</Text>
           <View style={style.garis} />

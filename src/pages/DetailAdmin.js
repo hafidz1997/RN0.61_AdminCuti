@@ -1,16 +1,10 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  ScrollView,
-  Alert,
-  ToastAndroid,
-  Image,
-} from 'react-native';
+import {StyleSheet, View, Text, ScrollView, Alert, Image} from 'react-native';
 import HeaderDetail from '../components/HeaderDetail';
 import Button from '../components/Button';
 import {openDatabase} from 'react-native-sqlite-storage';
+import {ToastError, ToastSuccess} from '../helpers/function';
+
 let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
 
 class DetailAdmin extends React.Component {
@@ -40,14 +34,7 @@ class DetailAdmin extends React.Component {
               foto: results.rows.item(0).foto,
             });
           } else {
-            ToastAndroid.showWithGravity(
-              'No user found',
-              ToastAndroid.LONG,
-              ToastAndroid.CENTER,
-            );
-            this.setState({
-              admin: '',
-            });
+            ToastError();
           }
         },
       );
@@ -74,14 +61,7 @@ class DetailAdmin extends React.Component {
                 foto: results.rows.item(0).foto,
               });
             } else {
-              ToastAndroid.showWithGravity(
-                'No user found',
-                ToastAndroid.LONG,
-                ToastAndroid.CENTER,
-              );
-              this.setState({
-                admin: '',
-              });
+              ToastError();
             }
           },
         );
@@ -106,25 +86,25 @@ class DetailAdmin extends React.Component {
     db.transaction(tx => {
       tx.executeSql('DELETE FROM admin where id=?', [id], (tx, results) => {
         if (results.rowsAffected > 0) {
-          ToastAndroid.showWithGravity(
-            'Admin berhasil dihapus',
-            ToastAndroid.LONG,
-            ToastAndroid.CENTER,
-          );
+          ToastSuccess('Admin', 'hapus');
           that.props.navigation.navigate('Admin');
         } else {
-          ToastAndroid.showWithGravity(
-            'Hapus gagal',
-            ToastAndroid.LONG,
-            ToastAndroid.CENTER,
-          );
+          ToastError();
         }
       });
     });
   };
 
   render() {
-    let {foto} = this.state.admin;
+    let foto;
+    // console.warn(this.state.admin.foto);
+    if (this.state.admin.foto) {
+      foto = <Image source={{uri: this.state.admin.foto}} style={style.foto} />;
+    } else {
+      foto = (
+        <Image source={require('../assets/profil.png')} style={style.foto} />
+      );
+    }
     return (
       <>
         <HeaderDetail
@@ -132,7 +112,7 @@ class DetailAdmin extends React.Component {
           onPress={() => this.props.navigation.pop()}
         />
         <ScrollView style={style.padding}>
-          {foto && <Image source={{uri: foto}} style={style.foto} />}
+          {foto}
           <Text style={style.judul2}>Nama Depan</Text>
           <Text style={style.isi}>{this.state.admin.depan}</Text>
           <View style={style.garis} />

@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Text, FlatList} from 'react-native';
+import {StyleSheet, View, Text, FlatList, RefreshControl} from 'react-native';
 import Header from '../components/Header';
 import AddButton from '../components/AddButton';
 import List from '../components/List';
@@ -17,8 +17,24 @@ class Pegawai extends React.Component {
       no: '',
       alamat: '',
       jk: '',
+      refreshing: false,
     };
-    db.transaction(tx => {
+    this.getPegawai();
+  }
+
+  componentDidMount() {
+    const {navigation} = this.props;
+    this.focusListener = navigation.addListener('didFocus', () => {
+      this.getPegawai();
+    });
+  }
+
+  componentWillUnmount() {
+    this.focusListener.remove();
+  }
+
+  async getPegawai() {
+    await db.transaction(tx => {
       tx.executeSql('SELECT * FROM pegawai', [], (tx, results) => {
         let temp = [];
         for (let i = 0; i < results.rows.length; ++i) {
@@ -31,32 +47,24 @@ class Pegawai extends React.Component {
     });
   }
 
-  componentDidMount() {
-    const {navigation} = this.props;
-    this.focusListener = navigation.addListener('didFocus', () => {
-      db.transaction(tx => {
-        tx.executeSql('SELECT * FROM pegawai', [], (tx, results) => {
-          let temp = [];
-          for (let i = 0; i < results.rows.length; ++i) {
-            temp.push(results.rows.item(i));
-          }
-          this.setState({
-            pegawai: temp,
-          });
-        });
-      });
+  _onRefresh = () => {
+    this.setState({refreshing: true});
+    this.getPegawai().then(() => {
+      this.setState({refreshing: false});
     });
-  }
-
-  componentWillUnmount() {
-    this.focusListener.remove();
-  }
+  };
 
   render() {
     let tampilan;
     if (this.state.pegawai.length !== 0) {
       tampilan = (
         <FlatList
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh}
+            />
+          }
           data={this.state.pegawai}
           renderItem={({item}) => (
             <List

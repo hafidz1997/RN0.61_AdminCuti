@@ -1,26 +1,18 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  ScrollView,
-  TextInput,
-  ToastAndroid,
-} from 'react-native';
+import {StyleSheet, View, Text, ScrollView, TextInput} from 'react-native';
 import HeaderDetail from '../components/HeaderDetail';
 import Button from '../components/Button';
 import {openDatabase} from 'react-native-sqlite-storage';
 let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
 import DatePicker from 'react-native-datepicker';
 import moment from 'moment';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import {ToastError, ToastSuccess, ToastEmpty} from '../helpers/function';
 
 class FormCuti extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       id: '',
-      // idp: '',
       cuti: [],
       depan: '',
       belakang: '',
@@ -122,42 +114,22 @@ class FormCuti extends React.Component {
               [idp, alasan, awal, akhir],
               (tx, results) => {
                 if (results.rowsAffected > 0) {
-                  ToastAndroid.showWithGravity(
-                    'Cuti berhasil ditambahkan',
-                    ToastAndroid.LONG,
-                    ToastAndroid.CENTER,
-                  );
+                  ToastSuccess('Cuti', 'tambah');
                   that.props.navigation.pop();
                 } else {
-                  ToastAndroid.showWithGravity(
-                    'Gagal',
-                    ToastAndroid.LONG,
-                    ToastAndroid.CENTER,
-                  );
+                  ToastError();
                 }
               },
             );
           });
         } else {
-          ToastAndroid.showWithGravity(
-            'Alasan Cuti belum diisi',
-            ToastAndroid.LONG,
-            ToastAndroid.CENTER,
-          );
+          ToastEmpty('Alasan Cuti');
         }
       } else {
-        ToastAndroid.showWithGravity(
-          'Tanggal Berakhir belum diisi',
-          ToastAndroid.LONG,
-          ToastAndroid.CENTER,
-        );
+        ToastEmpty('Tanggal Berakhir');
       }
     } else {
-      ToastAndroid.showWithGravity(
-        'Tanggal Mulai belum diisi',
-        ToastAndroid.LONG,
-        ToastAndroid.CENTER,
-      );
+      ToastEmpty('Tanggal Mulai');
     }
   };
 
@@ -165,8 +137,6 @@ class FormCuti extends React.Component {
     let that = this;
     let {id} = this.state;
     const {awal, akhir, alasan} = this.state;
-    // let id = this.props.navigation.getParam('id', 0);
-    // console.warn(depan);
     if (awal) {
       if (akhir) {
         if (alasan) {
@@ -211,42 +181,22 @@ class FormCuti extends React.Component {
                       },
                     );
                   });
-                  ToastAndroid.showWithGravity(
-                    'Cuti berhasil di update',
-                    ToastAndroid.LONG,
-                    ToastAndroid.CENTER,
-                  );
+                  ToastSuccess('Cuti', 'update');
                   that.props.navigation.pop();
                 } else {
-                  ToastAndroid.showWithGravity(
-                    'Update gagal',
-                    ToastAndroid.LONG,
-                    ToastAndroid.CENTER,
-                  );
+                  ToastError();
                 }
               },
             );
           });
         } else {
-          ToastAndroid.showWithGravity(
-            'Alasan belum diisi',
-            ToastAndroid.LONG,
-            ToastAndroid.CENTER,
-          );
+          ToastEmpty('Alasan Cuti');
         }
       } else {
-        ToastAndroid.showWithGravity(
-          'Tanggal Berakhir belum diisi',
-          ToastAndroid.LONG,
-          ToastAndroid.CENTER,
-        );
+        ToastEmpty('Tanggal Berakhir');
       }
     } else {
-      ToastAndroid.showWithGravity(
-        'Tanggal Mulai belum diisi',
-        ToastAndroid.LONG,
-        ToastAndroid.CENTER,
-      );
+      ToastEmpty('Tanggal Mulai');
     }
   };
 

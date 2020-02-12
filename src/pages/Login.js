@@ -1,13 +1,20 @@
 import React from 'react';
-import {StyleSheet, Text, TextInput, View, ToastAndroid} from 'react-native';
+import {StyleSheet, Text, TextInput, View} from 'react-native';
 import Button from '../components/Button';
 import {openDatabase} from 'react-native-sqlite-storage';
 import AsyncStorage from '@react-native-community/async-storage';
 import CheckBox from '@react-native-community/checkbox';
+import ValidationComponent from 'react-native-form-validator';
+import {
+  ToastErrorLogin,
+  ToastSuccessLogin,
+  ToastValid,
+  ToastEmpty,
+} from '../helpers/function';
 
 let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
 
-class Login extends React.Component {
+class Login extends ValidationComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -26,59 +33,52 @@ class Login extends React.Component {
   }
 
   login = () => {
+    this.validate({
+      email: {email: true},
+    });
+
     let that = this;
     const {email, password} = this.state;
     if (email) {
-      if (password) {
-        db.transaction(txn => {
-          txn.executeSql(
-            'SELECT * FROM admin WHERE email = ? AND password = ?',
-            [email, password],
-            (tx, results) => {
-              if (results.rows.length > 0) {
-                AsyncStorage.setItem('isLoggedIn', '1');
-                AsyncStorage.setItem(
-                  'dt',
-                  JSON.stringify(results.rows.item(0)),
-                );
-                ToastAndroid.showWithGravity(
-                  'Login Berhasil',
-                  ToastAndroid.LONG,
-                  ToastAndroid.CENTER,
-                );
-                that.props.navigation.navigate('Tab');
-              } else {
-                ToastAndroid.showWithGravity(
-                  'Email atau Password salah',
-                  ToastAndroid.LONG,
-                  ToastAndroid.CENTER,
-                );
-              }
-            },
-          );
-        });
+      if (!this.isFieldInError('email')) {
+        if (password) {
+          db.transaction(txn => {
+            txn.executeSql(
+              'SELECT * FROM admin WHERE email = ? AND password = ?',
+              [email, password],
+              (tx, results) => {
+                if (results.rows.length > 0) {
+                  AsyncStorage.setItem('isLoggedIn', '1');
+                  AsyncStorage.setItem(
+                    'dt',
+                    JSON.stringify(results.rows.item(0)),
+                  );
+                  ToastSuccessLogin();
+                  that.props.navigation.navigate('Tab');
+                } else {
+                  ToastErrorLogin();
+                }
+              },
+            );
+          });
+        } else {
+          ToastEmpty('Password');
+        }
       } else {
-        ToastAndroid.showWithGravity(
-          'Password belum diisi',
-          ToastAndroid.LONG,
-          ToastAndroid.CENTER,
-        );
+        ToastValid('Email');
       }
     } else {
-      ToastAndroid.showWithGravity(
-        'Email belum diisi',
-        ToastAndroid.LONG,
-        ToastAndroid.CENTER,
-      );
+      ToastEmpty('Email');
     }
   };
 
   render() {
     return (
-      <>
+      <View style={style.container}>
         <Text style={style.judul}>Login</Text>
         <Text style={style.label}>Email</Text>
         <TextInput
+          ref="email"
           placeholder="Masukkan Email"
           style={style.input}
           onChangeText={email => this.setState({email})}
@@ -93,7 +93,6 @@ class Login extends React.Component {
         />
         <View style={style.row}>
           <CheckBox
-            style={style.marginLeft}
             value={this.state.checked}
             onChange={() => this.showpass()}
           />
@@ -107,24 +106,21 @@ class Login extends React.Component {
           onPress={this.login.bind(this)}
           width="80%"
         />
-      </>
+      </View>
     );
   }
 }
 
 const style = StyleSheet.create({
-  marginLeft: {marginLeft: 15},
-  row: {flexDirection: 'row', alignItems: 'center'},
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+    marginTop: 10,
+  },
   container: {
     flex: 1,
-  },
-  icon: {
-    width: 25,
-    justifyContent: 'center',
-    alignContent: 'center',
-    lineHeight: 50,
-    height: 50,
-    marginTop: 20,
+    padding: 20,
   },
   judul: {
     fontSize: 25,
@@ -135,12 +131,12 @@ const style = StyleSheet.create({
   label: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginLeft: 20,
+    marginTop: 20,
   },
   input: {
     borderColor: 'grey',
     borderWidth: 1,
-    margin: 20,
+    marginTop: 20,
   },
   kosong: {
     fontSize: 20,

@@ -1,20 +1,29 @@
 import React from 'react';
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  StatusBar,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const HeaderDetail = props => {
   return (
-    <View style={style.header}>
-      <TouchableOpacity onPress={props.onPress}>
-        <Icon
-          style={style.icon}
-          name="ios-arrow-back"
-          size={30}
-          color="white"
-        />
-      </TouchableOpacity>
-      <Text style={style.title}>{props.title}</Text>
-    </View>
+    <>
+      <StatusBar backgroundColor="black" barStyle="light-content" />
+      <View style={style.header}>
+        <TouchableOpacity onPress={props.onPress}>
+          <Icon
+            style={style.icon}
+            name="ios-arrow-back"
+            size={30}
+            color="white"
+          />
+        </TouchableOpacity>
+        <Text style={style.title}>{props.title}</Text>
+      </View>
+    </>
   );
 };
 

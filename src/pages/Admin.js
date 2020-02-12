@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Text, FlatList} from 'react-native';
+import {StyleSheet, View, Text, FlatList, RefreshControl} from 'react-native';
 import Header from '../components/Header';
 import AddButton from '../components/AddButton';
 import List from '../components/List';
@@ -17,8 +17,30 @@ class Admin extends React.Component {
       email: '',
       password: '',
       profil: [],
+      refreshing: false,
     };
-    db.transaction(txn => {
+    this.getAdmin();
+  }
+
+  componentDidMount() {
+    this.getStorage();
+    const {navigation} = this.props;
+    this.focusListener = navigation.addListener('didFocus', () => {
+      this.getAdmin();
+    });
+  }
+
+  componentWillUnmount() {
+    this.focusListener.remove();
+  }
+
+  async getStorage() {
+    const dt = await AsyncStorage.getItem('dt');
+    this.setState({profil: JSON.parse(dt)});
+  }
+
+  async getAdmin() {
+    await db.transaction(txn => {
       txn.executeSql('SELECT * FROM admin', [], (tx, results) => {
         let temp = [];
         for (let i = 0; i < results.rows.length; ++i) {
@@ -31,34 +53,24 @@ class Admin extends React.Component {
     });
   }
 
-  async componentDidMount() {
-    const dt = await AsyncStorage.getItem('dt');
-    this.setState({profil: JSON.parse(dt)});
-    const {navigation} = this.props;
-    this.focusListener = navigation.addListener('didFocus', () => {
-      db.transaction(txn => {
-        txn.executeSql('SELECT * FROM admin', [], (tx, results) => {
-          let temp = [];
-          for (let i = 0; i < results.rows.length; ++i) {
-            temp.push(results.rows.item(i));
-          }
-          this.setState({
-            admin: temp,
-          });
-        });
-      });
+  _onRefresh = () => {
+    this.setState({refreshing: true});
+    this.getAdmin().then(() => {
+      this.setState({refreshing: false});
     });
-  }
-
-  componentWillUnmount() {
-    this.focusListener.remove();
-  }
+  };
 
   render() {
     let tampilan;
     if (this.state.admin.length !== 0) {
       tampilan = (
         <FlatList
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh}
+            />
+          }
           data={this.state.admin}
           renderItem={({item}) => {
             if (item.id !== this.state.profil.id) {

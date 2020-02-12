@@ -5,7 +5,6 @@ import {
   Text,
   ScrollView,
   TextInput,
-  ToastAndroid,
   Image,
 } from 'react-native';
 import HeaderDetail from '../components/HeaderDetail';
@@ -15,12 +14,18 @@ import {ActionSheet, Root} from 'native-base';
 import ImagePicker from 'react-native-image-crop-picker';
 import AsyncStorage from '@react-native-community/async-storage';
 import CheckBox from '@react-native-community/checkbox';
+import ValidationComponent from 'react-native-form-validator';
+import {
+  ToastValid,
+  ToastValidMin,
+  ToastError,
+  ToastSuccess,
+  ToastEmpty,
+} from '../helpers/function';
 
 let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
 
-class FormAdmin extends React.Component {
-  _isMounted = false;
-
+class FormAdmin extends ValidationComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -56,8 +61,11 @@ class FormAdmin extends React.Component {
     });
   }
 
-  async componentDidMount() {
-    this._isMounted = true;
+  componentDidMount() {
+    this.getStorage();
+  }
+
+  async getStorage() {
     let id = this.props.navigation.getParam('id', 0);
     const dt = await AsyncStorage.getItem('dt');
     const data = JSON.parse(dt);
@@ -123,129 +131,90 @@ class FormAdmin extends React.Component {
   };
 
   tambah = () => {
+    this.validate({
+      email: {email: true},
+      password: {minlength: 6},
+    });
+
     let that = this;
     const {depan, belakang, email, password, foto} = this.state;
     if (depan) {
       if (belakang) {
         if (email) {
-          if (password) {
-            if (foto) {
-              db.transaction(tx => {
-                tx.executeSql(
-                  'INSERT INTO admin (depan, belakang, email, password, foto) VALUES (?,?,?,?,?)',
-                  [depan, belakang, email, password, foto],
-                  (tx, results) => {
-                    if (results.rowsAffected > 0) {
-                      ToastAndroid.showWithGravity(
-                        'Admin berhasil ditambahkan',
-                        ToastAndroid.LONG,
-                        ToastAndroid.CENTER,
-                      );
-                      that.props.navigation.pop();
-                    } else {
-                      ToastAndroid.showWithGravity(
-                        'Gagal',
-                        ToastAndroid.LONG,
-                        ToastAndroid.CENTER,
-                      );
-                    }
-                  },
-                );
-              });
+          if (!this.isFieldInError('email')) {
+            if (password) {
+              if (!this.isFieldInError('password')) {
+                db.transaction(tx => {
+                  tx.executeSql(
+                    'INSERT INTO admin (depan, belakang, email, password, foto) VALUES (?,?,?,?,?)',
+                    [depan, belakang, email, password, foto],
+                    (tx, results) => {
+                      if (results.rowsAffected > 0) {
+                        ToastSuccess('Admin', 'tambah');
+                        that.props.navigation.pop();
+                      } else {
+                        ToastError();
+                      }
+                    },
+                  );
+                });
+              } else {
+                ToastValidMin('Password', '6 karakter');
+              }
             } else {
-              ToastAndroid.showWithGravity(
-                'Foto belum diupload',
-                ToastAndroid.LONG,
-                ToastAndroid.CENTER,
-              );
+              ToastEmpty('Password');
             }
           } else {
-            ToastAndroid.showWithGravity(
-              'Password belum diisi',
-              ToastAndroid.LONG,
-              ToastAndroid.CENTER,
-            );
+            ToastValid('Email');
           }
         } else {
-          ToastAndroid.showWithGravity(
-            'Email belum diisi',
-            ToastAndroid.LONG,
-            ToastAndroid.CENTER,
-          );
+          ToastEmpty('Email');
         }
       } else {
-        ToastAndroid.showWithGravity(
-          'Nama Belakang belum diisi',
-          ToastAndroid.LONG,
-          ToastAndroid.CENTER,
-        );
+        ToastEmpty('Nama Belakang');
       }
     } else {
-      ToastAndroid.showWithGravity(
-        'Nama Depan belum diisi',
-        ToastAndroid.LONG,
-        ToastAndroid.CENTER,
-      );
+      ToastEmpty('Nama Depan');
     }
   };
 
   update = () => {
+    this.validate({
+      email: {email: true},
+    });
+
     let that = this;
     let id = this.props.navigation.getParam('id', 0);
     const {depan, belakang, email, foto} = this.state;
     if (depan) {
       if (belakang) {
         if (email) {
-          if (foto) {
+          if (!this.isFieldInError('email')) {
             db.transaction(tx => {
               tx.executeSql(
                 'UPDATE admin set depan=?, belakang=?, email=?, foto=? where id=?',
                 [depan, belakang, email, foto, id],
                 (tx, results) => {
                   if (results.rowsAffected > 0) {
-                    ToastAndroid.showWithGravity(
-                      'Admin berhasil di update',
-                      ToastAndroid.LONG,
-                      ToastAndroid.CENTER,
-                    );
+                    ToastSuccess('Admin', 'update');
                     that.props.navigation.pop();
                   } else {
-                    ToastAndroid.showWithGravity(
-                      'Update gagal',
-                      ToastAndroid.LONG,
-                      ToastAndroid.CENTER,
-                    );
+                    ToastError();
                   }
                 },
               );
             });
           } else {
-            ToastAndroid.showWithGravity(
-              'Foto belum diupload',
-              ToastAndroid.LONG,
-              ToastAndroid.CENTER,
-            );
+            ToastValid('Email');
           }
         } else {
-          ToastAndroid.showWithGravity(
-            'Email belum diisi',
-            ToastAndroid.LONG,
-            ToastAndroid.CENTER,
-          );
+          ToastEmpty('Email');
         }
       } else {
-        ToastAndroid.showWithGravity(
-          'Nama Depan belum diisi',
-          ToastAndroid.LONG,
-          ToastAndroid.CENTER,
-        );
+        ToastEmpty('Nama Belakang');
       }
     } else {
-      ToastAndroid.showWithGravity(
-        'Nama Belakang belum diisi',
-        ToastAndroid.LONG,
-        ToastAndroid.CENTER,
-      );
+      ToastEmpty('Nama Depan');
     }
   };
 
@@ -267,6 +236,7 @@ class FormAdmin extends React.Component {
         <>
           <Text style={style.label}>Password</Text>
           <TextInput
+            ref="password"
             secureTextEntry={this.state.pass}
             placeholder="Masukkan Password"
             style={style.input}
@@ -324,6 +294,7 @@ class FormAdmin extends React.Component {
             {foto && <Image source={{uri: foto}} style={style.foto} />}
             <Text style={style.label}>Email</Text>
             <TextInput
+              ref="email"
               placeholder="Masukkan Email"
               style={style.input}
               value={this.state.email}
@@ -339,12 +310,17 @@ class FormAdmin extends React.Component {
 }
 
 const style = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+    marginTop: 10,
+  },
   container: {
     flex: 1,
+    padding: 20,
     backgroundColor: 'white',
   },
-  row: {flexDirection: 'row', alignItems: 'center'},
-  marginLeft: {marginLeft: 15},
   judul: {
     fontSize: 25,
     fontWeight: 'bold',
@@ -354,26 +330,19 @@ const style = StyleSheet.create({
   label: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginLeft: 20,
+    marginTop: 20,
   },
   input: {
     borderColor: 'grey',
     borderWidth: 1,
-    margin: 20,
+    marginTop: 10,
+    marginBottom: 10,
   },
   kosong: {
     fontSize: 20,
     color: 'grey',
     alignSelf: 'center',
     marginTop: '50%',
-  },
-  icon: {
-    width: 25,
-    justifyContent: 'center',
-    alignContent: 'center',
-    lineHeight: 50,
-    height: 50,
-    marginTop: 20,
   },
   foto: {width: 200, height: 200, margin: 20},
 });

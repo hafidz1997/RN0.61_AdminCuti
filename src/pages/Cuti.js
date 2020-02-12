@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Text, FlatList} from 'react-native';
+import {StyleSheet, View, Text, FlatList, RefreshControl} from 'react-native';
 import Header from '../components/Header';
 import List from '../components/List';
 import {openDatabase} from 'react-native-sqlite-storage';
@@ -16,38 +16,15 @@ class Cuti extends React.Component {
       no: '',
       alamat: '',
       jk: '',
+      refreshing: false,
     };
-    db.transaction(txn => {
-      txn.executeSql('SELECT * FROM pegawai', [], (tx, results) => {
-        let temp = [];
-        for (let i = 0; i < results.rows.length; ++i) {
-          temp.push(results.rows.item(i));
-        }
-        this.setState({
-          pegawai: temp,
-        });
-      });
-    });
+    this.getCuti();
   }
 
   componentDidMount() {
     const {navigation} = this.props;
     this.focusListener = navigation.addListener('didFocus', () => {
-      db.transaction(txn => {
-        txn.executeSql(
-          'SELECT pegawai.id AS id, depan, belakang, 5-sum(julianday(cuti.akhir)-julianday(cuti.awal)) AS sisa FROM pegawai LEFT JOIN cuti ON cuti.id_pegawai = pegawai.id GROUP BY pegawai.id ORDER BY COUNT(cuti.id_pegawai) DESC',
-          [],
-          (tx, results) => {
-            let temp = [];
-            for (let i = 0; i < results.rows.length; ++i) {
-              temp.push(results.rows.item(i));
-            }
-            this.setState({
-              pegawai: temp,
-            });
-          },
-        );
-      });
+      this.getCuti();
     });
   }
 
@@ -55,11 +32,42 @@ class Cuti extends React.Component {
     this.focusListener.remove();
   }
 
+  async getCuti() {
+    await db.transaction(txn => {
+      txn.executeSql(
+        'SELECT pegawai.id AS id, depan, belakang, 5-sum(julianday(cuti.akhir)-julianday(cuti.awal)) AS sisa FROM pegawai LEFT JOIN cuti ON cuti.id_pegawai = pegawai.id GROUP BY pegawai.id ORDER BY COUNT(cuti.id_pegawai) DESC',
+        [],
+        (tx, results) => {
+          let temp = [];
+          for (let i = 0; i < results.rows.length; ++i) {
+            temp.push(results.rows.item(i));
+          }
+          this.setState({
+            pegawai: temp,
+          });
+        },
+      );
+    });
+  }
+
+  _onRefresh = () => {
+    this.setState({refreshing: true});
+    this.getCuti().then(() => {
+      this.setState({refreshing: false});
+    });
+  };
+
   render() {
     let tampilan;
     if (this.state.pegawai.length !== 0) {
       tampilan = (
         <FlatList
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh}
+            />
+          }
           data={this.state.pegawai}
           renderItem={({item}) => (
             <List

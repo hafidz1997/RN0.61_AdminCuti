@@ -1,20 +1,21 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  ScrollView,
-  TextInput,
-  ToastAndroid,
-} from 'react-native';
+import {StyleSheet, View, Text, ScrollView, TextInput} from 'react-native';
 import Button from '../components/Button';
-
 import {openDatabase} from 'react-native-sqlite-storage';
 import HeaderDetail from '../components/HeaderDetail';
 import {RadioButton} from 'react-native-paper';
+import ValidationComponent from 'react-native-form-validator';
+import {
+  ToastValid,
+  ToastValidMin,
+  ToastError,
+  ToastSuccess,
+  ToastEmpty,
+} from '../helpers/function';
+
 let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
 
-class TambahPegawai extends React.Component {
+class TambahPegawai extends ValidationComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -57,159 +58,120 @@ class TambahPegawai extends React.Component {
   }
 
   tambah = () => {
+    this.validate({
+      email: {email: true},
+      no: {numbers: true, minlength: 8, maxlength: 10},
+    });
+
     let that = this;
     const {depan, belakang, email, no, alamat, jk} = this.state;
     if (depan) {
       if (belakang) {
         if (email) {
-          if (no) {
-            if (alamat) {
-              if (jk) {
-                db.transaction(tx => {
-                  tx.executeSql(
-                    'INSERT INTO pegawai (depan, belakang, email, no, alamat, jk) VALUES (?,?,?,?,?,?)',
-                    [depan, belakang, email, no, alamat, jk],
-                    (tx, results) => {
-                      if (results.rowsAffected > 0) {
-                        ToastAndroid.showWithGravity(
-                          'Pegawai berhasil ditambahkan',
-                          ToastAndroid.LONG,
-                          ToastAndroid.CENTER,
-                        );
-                        that.props.navigation.pop();
-                      } else {
-                        ToastAndroid.showWithGravity(
-                          'Gagal',
-                          ToastAndroid.LONG,
-                          ToastAndroid.CENTER,
-                        );
-                      }
-                    },
-                  );
-                });
+          if (!this.isFieldInError('email')) {
+            if (no) {
+              if (!this.isFieldInError('no')) {
+                if (alamat) {
+                  if (jk) {
+                    db.transaction(tx => {
+                      tx.executeSql(
+                        'INSERT INTO pegawai (depan, belakang, email, no, alamat, jk) VALUES (?,?,?,?,?,?)',
+                        [depan, belakang, email, no, alamat, jk],
+                        (tx, results) => {
+                          if (results.rowsAffected > 0) {
+                            ToastSuccess('Pegawai', 'tambah');
+                            that.props.navigation.pop();
+                          } else {
+                            ToastError();
+                          }
+                        },
+                      );
+                    });
+                  } else {
+                    ToastEmpty('Jenis Kelamin');
+                  }
+                } else {
+                  ToastEmpty('Alamat');
+                }
               } else {
-                ToastAndroid.showWithGravity(
-                  'Jenis Kelamin belum diisi',
-                  ToastAndroid.LONG,
-                  ToastAndroid.CENTER,
-                );
+                ToastValidMin('Nomor HP', '8 angka');
               }
             } else {
-              ToastAndroid.showWithGravity(
-                'Alamat belum diisi',
-                ToastAndroid.LONG,
-                ToastAndroid.CENTER,
-              );
+              ToastEmpty('Nomor HP');
             }
           } else {
-            ToastAndroid.showWithGravity(
-              'Nomor HP belum diisi',
-              ToastAndroid.LONG,
-              ToastAndroid.CENTER,
-            );
+            ToastValid('Email');
           }
         } else {
-          ToastAndroid.showWithGravity(
-            'Email belum diisi',
-            ToastAndroid.LONG,
-            ToastAndroid.CENTER,
-          );
+          ToastEmpty('Email');
         }
       } else {
-        ToastAndroid.showWithGravity(
-          'Nama Belakang belum diisi',
-          ToastAndroid.LONG,
-          ToastAndroid.CENTER,
-        );
+        ToastEmpty('Nama Belakang');
       }
     } else {
-      ToastAndroid.showWithGravity(
-        'Nama Depan belum diisi',
-        ToastAndroid.LONG,
-        ToastAndroid.CENTER,
-      );
+      ToastEmpty('Nama Depan');
     }
   };
 
   update = () => {
+    this.validate({
+      email: {email: true},
+      no: {numbers: true, minlength: 8, maxlength: 10},
+    });
+
     let that = this;
     let id = this.props.navigation.getParam('id', 0);
     const {depan, belakang, email, no, alamat, jk} = this.state;
     if (depan) {
       if (belakang) {
         if (email) {
-          if (no) {
-            if (alamat) {
-              if (jk) {
-                db.transaction(tx => {
-                  tx.executeSql(
-                    'UPDATE pegawai set depan=?, belakang=?, email=?,no=?,alamat=?,jk=? where id=?',
-                    [depan, belakang, email, no, alamat, jk, id],
-                    (tx, results) => {
-                      if (results.rowsAffected > 0) {
-                        ToastAndroid.showWithGravity(
-                          'Pegawai berhasil di update',
-                          ToastAndroid.LONG,
-                          ToastAndroid.CENTER,
-                        );
-                        that.props.navigation.pop();
-                      } else {
-                        ToastAndroid.showWithGravity(
-                          'Update gagal',
-                          ToastAndroid.LONG,
-                          ToastAndroid.CENTER,
-                        );
-                      }
-                    },
-                  );
-                });
+          if (!this.isFieldInError('email')) {
+            if (no) {
+              if (!this.isFieldInError('no')) {
+                if (alamat) {
+                  if (jk) {
+                    db.transaction(tx => {
+                      tx.executeSql(
+                        'UPDATE pegawai set depan=?, belakang=?, email=?,no=?,alamat=?,jk=? where id=?',
+                        [depan, belakang, email, no, alamat, jk, id],
+                        (tx, results) => {
+                          if (results.rowsAffected > 0) {
+                            ToastSuccess('Pegawai', 'update');
+                            that.props.navigation.pop();
+                          } else {
+                            ToastError();
+                          }
+                        },
+                      );
+                    });
+                  } else {
+                    ToastEmpty('Jenis Kelamin');
+                  }
+                } else {
+                  ToastEmpty('Alamat');
+                }
               } else {
-                ToastAndroid.showWithGravity(
-                  'Jenis Kelamin belum diisi',
-                  ToastAndroid.LONG,
-                  ToastAndroid.CENTER,
-                );
+                ToastValidMin('Nomor Hp', '8 angka');
               }
             } else {
-              ToastAndroid.showWithGravity(
-                'Alamat belum diisi',
-                ToastAndroid.LONG,
-                ToastAndroid.CENTER,
-              );
+              ToastEmpty('Nomor HP');
             }
           } else {
-            ToastAndroid.showWithGravity(
-              'No Hp belum diisi',
-              ToastAndroid.LONG,
-              ToastAndroid.CENTER,
-            );
+            ToastValid('Email');
           }
         } else {
-          ToastAndroid.showWithGravity(
-            'Email belum diisi',
-            ToastAndroid.LONG,
-            ToastAndroid.CENTER,
-          );
+          ToastEmpty('Email');
         }
       } else {
-        ToastAndroid.showWithGravity(
-          'Nama Depan belum diisi',
-          ToastAndroid.LONG,
-          ToastAndroid.CENTER,
-        );
+        ToastEmpty('Nama Belakang');
       }
     } else {
-      ToastAndroid.showWithGravity(
-        'Nama Belakang belum diisi',
-        ToastAndroid.LONG,
-        ToastAndroid.CENTER,
-      );
+      ToastEmpty('Nama Depan');
     }
   };
 
   render() {
     let tampilan;
-    // console.warn(this.state.pegawai.jk);
     if (this.state.pegawai.length !== 0) {
       tampilan = (
         <Button
@@ -231,8 +193,6 @@ class TambahPegawai extends React.Component {
         />
       );
     }
-    // let coba = this.state.jk - 1;
-    // console.warn(coba);
     const {jk} = this.state;
     return (
       <>
@@ -259,6 +219,7 @@ class TambahPegawai extends React.Component {
             />
             <Text style={style.label}>Email</Text>
             <TextInput
+              ref="email"
               placeholder="Masukkan Email"
               style={style.input}
               value={this.state.email}
@@ -267,6 +228,7 @@ class TambahPegawai extends React.Component {
             />
             <Text style={style.label}>No HP</Text>
             <TextInput
+              ref="no"
               placeholder="Masukkan Nomor HP"
               style={style.input}
               value={this.state.no}

@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, TouchableOpacity, Text} from 'react-native';
+import {StyleSheet, TouchableOpacity, Text, View} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Button = props => {
@@ -19,29 +19,33 @@ const Button = props => {
           alignSelf: props.alignSelf,
         },
       ]}>
-      <Ionicons style={style.icon} name={props.icon} size={20} color="white" />
-      {tampil}
+      <View style={style.row}>
+        <Ionicons
+          style={style.icon}
+          name={props.icon}
+          size={20}
+          color="white"
+        />
+        {tampil}
+      </View>
     </TouchableOpacity>
   );
 };
 
 const style = StyleSheet.create({
+  row: {flexDirection: 'row', justifyContent: 'center', alignItems: 'center'},
   button: {
     borderRadius: 8,
     padding: 10,
-    margin: 10,
-    marginLeft: 20,
+    margin: 8,
     flexDirection: 'row',
-    alignSelf: 'flex-start',
     justifyContent: 'center',
   },
   text: {
     color: 'white',
     fontSize: 20,
     fontWeight: 'bold',
-  },
-  icon: {
-    marginRight: 5,
+    marginLeft: 8,
   },
 });
 

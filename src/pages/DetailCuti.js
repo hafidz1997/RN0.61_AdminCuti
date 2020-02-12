@@ -6,13 +6,14 @@ import {
   Text,
   Alert,
   FlatList,
-  ToastAndroid,
+  RefreshControl,
 } from 'react-native';
 import HeaderDetail from '../components/HeaderDetail';
 import Button from '../components/Button';
 import {openDatabase} from 'react-native-sqlite-storage';
 import AddButton from '../components/AddButton';
 import List from '../components/List';
+import {ToastError, ToastSuccess} from '../helpers/function';
 
 let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
 
@@ -30,75 +31,9 @@ class DetailCuti extends React.Component {
       akhir: new Date(),
       hari: '',
       sisa: 5,
+      refreshing: false,
     };
-    let id = this.props.navigation.getParam('id', 0);
-    // this.setState({
-    //   id: id,
-    // });
-    db.transaction(txn => {
-      txn.executeSql(
-        `SELECT
-            depan,
-            belakang,
-            cuti.*,
-            julianday(cuti.akhir)-julianday(cuti.awal) AS hari,
-            (SELECT
-              5 - sum(julianday(cuti.akhir)-julianday(cuti.awal)) FROM
-                    pegawai JOIN cuti ON cuti.id_pegawai = pegawai.id
-              WHERE pegawai.id = ?) AS sisa
-        FROM
-            pegawai
-        JOIN cuti ON
-            cuti.id_pegawai = pegawai.id
-        WHERE pegawai.id = ?`,
-        [id, id],
-        (tx, results) => {
-          let len = results.rows.length;
-          if (len !== 0) {
-            let temp = [];
-            for (let i = 0; i < results.rows.length; ++i) {
-              temp.push(results.rows.item(i));
-            }
-            this.setState({
-              cuti: temp,
-              id: results.rows.item(0).id,
-              depan: results.rows.item(0).depan,
-              belakang: results.rows.item(0).belakang,
-              sisa: results.rows.item(0).sisa,
-              idp: results.rows.item(0).id_pegawai,
-            });
-          } else if (len === 0) {
-            db.transaction(txn2 => {
-              txn2.executeSql(
-                'SELECT * FROM pegawai where id = ?',
-                [id],
-                (tx2, res) => {
-                  let len2 = res.rows.length;
-                  console.log('len2', len2);
-                  if (len2 !== 0) {
-                    this.setState({
-                      cuti: '',
-                      depan: res.rows.item(0).depan,
-                      belakang: res.rows.item(0).belakang,
-                      idp: res.rows.item(0).id,
-                    });
-                  } else {
-                    ToastAndroid.showWithGravity(
-                      'No user found',
-                      ToastAndroid.LONG,
-                      ToastAndroid.CENTER,
-                    );
-                    this.setState({
-                      cuti: '',
-                    });
-                  }
-                },
-              );
-            });
-          }
-        },
-      );
-    });
+    this.getCuti();
   }
 
   hapus = id => {
@@ -154,18 +89,10 @@ class DetailCuti extends React.Component {
               },
             );
           });
-          ToastAndroid.showWithGravity(
-            'Cuti berhasil dihapus',
-            ToastAndroid.LONG,
-            ToastAndroid.CENTER,
-          );
+          ToastSuccess('Cuti', 'hapus');
           that.props.navigation.navigate('pegawai');
         } else {
-          ToastAndroid.showWithGravity(
-            'Gagal',
-            ToastAndroid.LONG,
-            ToastAndroid.CENTER,
-          );
+          ToastError();
         }
       });
     });
@@ -174,81 +101,80 @@ class DetailCuti extends React.Component {
   componentDidMount() {
     const {navigation} = this.props;
     this.focusListener = navigation.addListener('didFocus', () => {
-      let id = this.props.navigation.getParam('id', 0);
-      this.setState({
-        idp: id,
-      });
-
-      db.transaction(tx => {
-        tx.executeSql(
-          `SELECT
-              depan,
-              belakang,
-              cuti.*,
-              julianday(cuti.akhir)-julianday(cuti.awal) AS hari,
-              (SELECT
-                5 - sum(julianday(cuti.akhir)-julianday(cuti.awal)) FROM
-                      pegawai JOIN cuti ON cuti.id_pegawai = pegawai.id
-                WHERE pegawai.id = ?) AS sisa
-          FROM
-              pegawai
-          JOIN cuti ON
-              cuti.id_pegawai = pegawai.id
-          WHERE pegawai.id = ?`,
-          [id, id],
-          (tx, results) => {
-            let len = results.rows.length;
-            if (len !== 0) {
-              let temp = [];
-              for (let i = 0; i < results.rows.length; ++i) {
-                temp.push(results.rows.item(i));
-              }
-              this.setState({
-                cuti: temp,
-                id: results.rows.item(0).id,
-                depan: results.rows.item(0).depan,
-                belakang: results.rows.item(0).belakang,
-                sisa: results.rows.item(0).sisa,
-                idp: results.rows.item(0).id_pegawai,
-              });
-            } else if (len === 0) {
-              db.transaction(tx => {
-                tx.executeSql(
-                  'SELECT * FROM pegawai where id = ?',
-                  [id],
-                  (tx, results) => {
-                    let len = results.rows.length;
-                    console.log('len', len);
-                    if (len !== 0) {
-                      this.setState({
-                        cuti: '',
-                        depan: results.rows.item(0).depan,
-                        belakang: results.rows.item(0).belakang,
-                        idp: results.rows.item(0).id,
-                      });
-                    } else {
-                      ToastAndroid.showWithGravity(
-                        'No user found',
-                        ToastAndroid.LONG,
-                        ToastAndroid.CENTER,
-                      );
-                      this.setState({
-                        cuti: '',
-                      });
-                    }
-                  },
-                );
-              });
-            }
-          },
-        );
-      });
+      this.getCuti();
     });
   }
 
   componentWillUnmount() {
     this.focusListener.remove();
   }
+
+  async getCuti() {
+    let id = this.props.navigation.getParam('id', 0);
+    await db.transaction(tx => {
+      tx.executeSql(
+        `SELECT
+            depan,
+            belakang,
+            cuti.*,
+            julianday(cuti.akhir)-julianday(cuti.awal) AS hari,
+            (SELECT
+              5 - sum(julianday(cuti.akhir)-julianday(cuti.awal)) FROM
+                    pegawai JOIN cuti ON cuti.id_pegawai = pegawai.id
+              WHERE pegawai.id = ?) AS sisa
+        FROM
+            pegawai
+        JOIN cuti ON
+            cuti.id_pegawai = pegawai.id
+        WHERE pegawai.id = ?`,
+        [id, id],
+        (tx, results) => {
+          let len = results.rows.length;
+          if (len !== 0) {
+            let temp = [];
+            for (let i = 0; i < results.rows.length; ++i) {
+              temp.push(results.rows.item(i));
+            }
+            this.setState({
+              cuti: temp,
+              id: results.rows.item(0).id,
+              depan: results.rows.item(0).depan,
+              belakang: results.rows.item(0).belakang,
+              sisa: results.rows.item(0).sisa,
+              idp: results.rows.item(0).id_pegawai,
+            });
+          } else if (len === 0) {
+            db.transaction(tx => {
+              tx.executeSql(
+                'SELECT * FROM pegawai where id = ?',
+                [id],
+                (tx, results) => {
+                  let len = results.rows.length;
+                  console.log('len', len);
+                  if (len !== 0) {
+                    this.setState({
+                      depan: results.rows.item(0).depan,
+                      belakang: results.rows.item(0).belakang,
+                      idp: results.rows.item(0).id,
+                    });
+                  } else {
+                    ToastError();
+                  }
+                },
+              );
+            });
+          }
+        },
+      );
+    });
+  }
+
+  _onRefresh = () => {
+    this.setState({refreshing: true});
+    this.getCuti().then(() => {
+      this.setState({refreshing: false});
+    });
+  };
 
   render() {
     let tampilan;
@@ -267,6 +193,12 @@ class DetailCuti extends React.Component {
     if (this.state.cuti) {
       tampilan = (
         <FlatList
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh}
+            />
+          }
           nestedScrollEnabled={true}
           data={this.state.cuti}
           renderItem={({item}) => (
@@ -328,6 +260,7 @@ const style = StyleSheet.create({
   row: {flexDirection: 'row', alignItems: 'center'},
   container: {
     flex: 1,
+    padding: 10,
   },
   judul: {
     fontSize: 25,
