@@ -1,12 +1,23 @@
 import React from 'react';
-import {StyleSheet, View, Text, ScrollView, TextInput} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+} from 'react-native';
 import HeaderDetail from '../components/HeaderDetail';
 import Button from '../components/Button';
+import DatePickers from '../components/DatePickers';
+
 import {openDatabase} from 'react-native-sqlite-storage';
-let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
 import DatePicker from 'react-native-datepicker';
 import moment from 'moment';
 import {ToastError, ToastSuccess, ToastEmpty} from '../helpers/function';
+import Icon from 'react-native-vector-icons/Ionicons';
+
+let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
 
 class FormCuti extends React.Component {
   constructor(props) {
@@ -21,6 +32,7 @@ class FormCuti extends React.Component {
       akhir: '',
       thisDay: new Date(),
       sisa: '',
+      show: false,
     };
     let id = this.props.navigation.getParam('id', 0);
     let idp = this.props.navigation.getParam('idp', 0);
@@ -100,6 +112,10 @@ class FormCuti extends React.Component {
       );
     });
   }
+
+  showDatepicker = () => {
+    this.setState({show: true});
+  };
 
   tambah = () => {
     let that = this;
@@ -234,7 +250,27 @@ class FormCuti extends React.Component {
         .add(sisa, 'day')
         .format('YYYY-MM-DD');
     }
-    // console.warn(max);
+    let txt;
+    let val;
+    let txt2;
+    let val2;
+    //mulai
+    if (awal) {
+      txt = awal;
+      val = awal;
+    } else {
+      txt = 'Pilih Tanggal';
+      val = new Date();
+    }
+    //berakhir
+    if (akhir) {
+      txt2 = akhir;
+      val2 = akhir;
+    } else {
+      txt2 = 'Pilih Tanggal';
+      val2 = new Date();
+    }
+
     return (
       <>
         <HeaderDetail
@@ -246,57 +282,63 @@ class FormCuti extends React.Component {
             <Text style={style.judul}>
               {this.state.judul} {this.state.depan} {this.state.belakang}
             </Text>
+
             <Text style={style.label}>Tanggal Mulai</Text>
-            <DatePicker
-              style={{width: 200, margin: 15}}
-              date={this.state.awal}
-              mode="date"
-              placeholder="Select Date"
-              format="YYYY-MM-DD"
-              minDate={this.state.thisDay}
-              confirmBtnText="Confirm"
-              cancelBtnText="Cancel"
-              customStyles={{
-                dateIcon: {
-                  position: 'absolute',
-                  left: 0,
-                  top: 4,
-                  marginLeft: 0,
-                },
-                dateInput: {
-                  marginLeft: 36,
-                },
-              }}
-              onDateChange={date => {
-                this.setState({awal: date});
-              }}
-            />
+            <View>
+              <TouchableOpacity
+                style={style.date}
+                onPress={this.showDatepicker.bind(this)}>
+                <Icon
+                  style={style.icon}
+                  name="md-calendar"
+                  size={30}
+                  color="#779DCA"
+                />
+                <Text>{txt}</Text>
+              </TouchableOpacity>
+            </View>
+            {this.state.show && (
+              <DatePickers
+                // date={this.state.awal}
+                value={val}
+                // min={this.state.thisDay}
+                onChange={(event, date) => {
+                  this.setState({
+                    awal: moment(date).format('YYYY-MM-DD'),
+                    show: false,
+                  });
+                }}
+              />
+            )}
+
             <Text style={style.label}>Tanggal Berakhir</Text>
-            <DatePicker
-              style={{width: 200, margin: 15}}
-              date={this.state.akhir}
-              mode="date"
-              placeholder="Select Date"
-              format="YYYY-MM-DD"
-              minDate={this.state.awal}
-              maxDate={max}
-              confirmBtnText="Confirm"
-              cancelBtnText="Cancel"
-              customStyles={{
-                dateIcon: {
-                  position: 'absolute',
-                  left: 0,
-                  top: 4,
-                  marginLeft: 0,
-                },
-                dateInput: {
-                  marginLeft: 36,
-                },
-              }}
-              onDateChange={date => {
-                this.setState({akhir: date});
-              }}
-            />
+            <View>
+              <TouchableOpacity
+                style={style.date}
+                onPress={this.showDatepicker.bind(this)}>
+                <Icon
+                  style={style.icon}
+                  name="md-calendar"
+                  size={30}
+                  color="#779DCA"
+                />
+                <Text>{txt2}</Text>
+              </TouchableOpacity>
+            </View>
+            {this.state.show && (
+              <DatePickers
+                // date={this.state.akhir}
+                value={val2}
+                max={max}
+                // min={this.state.thisDay}
+                onChange={(event, date) => {
+                  this.setState({
+                    akhir: moment(date).format('YYYY-MM-DD'),
+                    show: false,
+                  });
+                }}
+              />
+            )}
             <Text style={style.label}>Alasan Cuti</Text>
             <TextInput
               multiline={true}
@@ -348,14 +390,19 @@ const style = StyleSheet.create({
     marginTop: '50%',
   },
   icon: {
-    width: 25,
-    justifyContent: 'center',
-    alignContent: 'center',
-    lineHeight: 50,
-    height: 50,
-    marginTop: 20,
+    marginRight: 10,
   },
   foto: {width: 200, height: 200, margin: 20},
+  date: {
+    borderWidth: 1,
+    width: 150,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 20,
+    flexDirection: 'row',
+    padding: 10,
+  },
 });
 
 export default FormCuti;
