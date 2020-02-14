@@ -43,7 +43,7 @@ class FormCuti extends React.Component {
             belakang,
             cuti.*,
             (SELECT
-              5 - sum(julianday(cuti.akhir)-julianday(cuti.awal)) FROM
+              5 - sum(julianday(cuti.akhir)-julianday(cuti.awal)+1) FROM
                     pegawai JOIN cuti ON cuti.id_pegawai = pegawai.id
               WHERE pegawai.id = ?) AS sisa
         FROM
@@ -79,7 +79,7 @@ class FormCuti extends React.Component {
                 belakang,
                 cuti.*,
                 (SELECT
-                  5 - sum(julianday(cuti.akhir)-julianday(cuti.awal)) FROM
+                  5 - sum(julianday(cuti.akhir)-julianday(cuti.awal)+1) FROM
                         pegawai JOIN cuti ON cuti.id_pegawai = pegawai.id
                   WHERE pegawai.id = ?) AS sisa
             FROM
@@ -307,7 +307,7 @@ class FormCuti extends React.Component {
                 onChange={(event, date) => {
                   this.setState({
                     awal: moment(date).format('YYYY-MM-DD'),
-                    show: false,
+                    show1: false,
                   });
                 }}
               />
@@ -331,11 +331,11 @@ class FormCuti extends React.Component {
               <DatePickers
                 value={val2}
                 max={max}
-                // min={this.state.thisDay}
+                min={this.state.awal}
                 onChange={(event, date) => {
                   this.setState({
                     akhir: moment(date).format('YYYY-MM-DD'),
-                    show: false,
+                    show2: false,
                   });
                 }}
               />

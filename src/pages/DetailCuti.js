@@ -55,9 +55,9 @@ class DetailCuti extends React.Component {
               depan,
               belakang,
               cuti.*,
-              julianday(cuti.akhir)-julianday(cuti.awal) AS hari,
+              julianday(cuti.akhir)-julianday(cuti.awal)+1 AS hari,
               (SELECT
-                5 - sum(julianday(cuti.akhir)-julianday(cuti.awal)) FROM
+                5 - sum(julianday(cuti.akhir)-julianday(cuti.awal)+1) FROM
                       pegawai JOIN cuti ON cuti.id_pegawai = pegawai.id
                 WHERE pegawai.id = ?) AS sisa
           FROM
@@ -117,9 +117,9 @@ class DetailCuti extends React.Component {
             depan,
             belakang,
             cuti.*,
-            julianday(cuti.akhir)-julianday(cuti.awal) AS hari,
+            julianday(cuti.akhir)-julianday(cuti.awal)+1 AS hari,
             (SELECT
-              5 - sum(julianday(cuti.akhir)-julianday(cuti.awal)) FROM
+              5 - sum(julianday(cuti.akhir)-julianday(cuti.awal)+1) FROM
                     pegawai JOIN cuti ON cuti.id_pegawai = pegawai.id
               WHERE pegawai.id = ?) AS sisa
         FROM
