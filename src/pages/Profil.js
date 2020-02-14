@@ -13,6 +13,7 @@ import Button from '../components/Button';
 import AsyncStorage from '@react-native-community/async-storage';
 import {ToastError} from '../helpers/function';
 import db from '../helpers/variable';
+import firebase from 'react-native-firebase';
 
 class Profil extends React.Component {
   constructor(props) {
@@ -30,6 +31,42 @@ class Profil extends React.Component {
     this.focusListener = navigation.addListener('didFocus', () => {
       this.getprofil();
     });
+    firebase
+      .messaging()
+      .hasPermission()
+      .then(enabled => {
+        if (enabled) {
+          console.log('has permission');
+        } else {
+          console.log('no permission');
+          this.NotiPermission();
+        }
+      });
+    this.getToken();
+  }
+
+  async getToken() {
+    let fcmToken = await AsyncStorage.getItem('fcmToken');
+    console.log('fcm token asyncstorage:', fcmToken);
+    if (!fcmToken) {
+      fcmToken = await firebase.messaging().getToken();
+      if (fcmToken) {
+        console.log('fcm token firebase:', fcmToken);
+        await AsyncStorage.setItem('fcmToken', fcmToken);
+      }
+    }
+  }
+
+  async NotiPermission() {
+    firebase
+      .messaging()
+      .requestPermission()
+      .then(() => {
+        console.warn('authorized');
+      })
+      .catch(error => {
+        console.warn('permission rejected');
+      });
   }
 
   async getprofil() {
@@ -64,6 +101,39 @@ class Profil extends React.Component {
       this.setState({refreshing: false});
     });
   };
+
+  async notif() {
+    // console.warn('notification');
+    const key = 'AIzaSyBSKD1SayfB8FRTtz07WM6soWEREfD__fg';
+    const msg = {
+      registration_ids: [
+        'f4qPCSOjYMw:APA91bE2-5zQDez5gfOd3BJox-Y4l6BuUiNtUBcR3CgU8fLnsZTIljf-ZJxZ3P5Fb9an76xDhfpSSkXwt2-GUqoqRICcT7aHK5RhFEAymqRjgZb2RODwuI-P4Pq1R7XtXpkG4kSbVD6E',
+      ],
+      // to:
+      //   'f4qPCSOjYMw:APA91bE2-5zQDez5gfOd3BJox-Y4l6BuUiNtUBcR3CgU8fLnsZTIljf-ZJxZ3P5Fb9an76xDhfpSSkXwt2-GUqoqRICcT7aHK5RhFEAymqRjgZb2RODwuI-P4Pq1R7XtXpkG4kSbVD6E',
+      notification: {
+        title: 'Hello World!',
+        body: 'My first notification!',
+        vibrate: 1,
+        sound: 1,
+        show_in_foreground: true,
+        priority: 'high',
+        content_available: true,
+      },
+    };
+    let headers = new Headers({
+      'Content-Type': 'application/json',
+      Authorization: 'key=' + key,
+    });
+
+    let response = await fetch('https://fcm.googleapis.com/fcm/send', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(msg),
+    });
+    // response = await response.json();
+    console.log(JSON.stringify(msg));
+  }
 
   render() {
     let foto;
@@ -108,6 +178,14 @@ class Profil extends React.Component {
               }
             />
             <Button
+              title="Push Notif"
+              color="gold"
+              icon="md-notifications"
+              onPress={() => this.notif()}
+            />
+          </View>
+          <View style={{marginBottom: 20}}>
+            <Button
               title="Logout"
               color="tomato"
               icon="md-exit"
@@ -134,7 +212,7 @@ class Profil extends React.Component {
 }
 
 const style = StyleSheet.create({
-  row: {flexDirection: 'row', justifyContent: 'center'},
+  row: {flexDirection: 'row', justifyContent: 'center', margin: 20},
   padding: {padding: 10},
   judul2: {
     color: '#7E94B3',
