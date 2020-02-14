@@ -131,8 +131,8 @@ class Profil extends React.Component {
       headers,
       body: JSON.stringify(msg),
     });
-    // response = await response.json();
-    console.log(JSON.stringify(msg));
+    response = await response.json();
+    console.log(response);
   }
 
   render() {
