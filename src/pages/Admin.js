@@ -28,18 +28,11 @@ class Admin extends React.Component {
     this.focusListener = navigation.addListener('didFocus', () => {
       this.getAdmin();
     });
-    // this.pushNotification();
   }
 
   componentWillUnmount() {
     this.focusListener.remove();
   }
-
-  // async pushNotification() {
-  //   await PushNotification.configure({
-  //     onNotification: function(notification) {},
-  //   });
-  // }
 
   async getStorage() {
     const dt = await AsyncStorage.getItem('dt');

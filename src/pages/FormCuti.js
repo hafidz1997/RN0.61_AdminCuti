@@ -43,7 +43,7 @@ class FormCuti extends React.Component {
             belakang,
             cuti.*,
             (SELECT
-              5 - sum(julianday(cuti.akhir)-julianday(cuti.awal)+1) FROM
+              5 - sum(julianday(cuti.akhir)-julianday(cuti.awal)) FROM
                     pegawai JOIN cuti ON cuti.id_pegawai = pegawai.id
               WHERE pegawai.id = ?) AS sisa
         FROM
@@ -79,7 +79,7 @@ class FormCuti extends React.Component {
                 belakang,
                 cuti.*,
                 (SELECT
-                  5 - sum(julianday(cuti.akhir)-julianday(cuti.awal)+1) FROM
+                  5 - sum(julianday(cuti.akhir)-julianday(cuti.awal)) FROM
                         pegawai JOIN cuti ON cuti.id_pegawai = pegawai.id
                   WHERE pegawai.id = ?) AS sisa
             FROM

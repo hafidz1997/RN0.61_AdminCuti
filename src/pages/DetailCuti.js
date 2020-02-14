@@ -55,9 +55,9 @@ class DetailCuti extends React.Component {
               depan,
               belakang,
               cuti.*,
-              julianday(cuti.akhir)-julianday(cuti.awal)+1 AS hari,
+              julianday(cuti.akhir)-julianday(cuti.awal) AS hari,
               (SELECT
-                5 - sum(julianday(cuti.akhir)-julianday(cuti.awal)+1) FROM
+                5 - sum(julianday(cuti.akhir)-julianday(cuti.awal)) FROM
                       pegawai JOIN cuti ON cuti.id_pegawai = pegawai.id
                 WHERE pegawai.id = ?) AS sisa
           FROM
@@ -117,9 +117,9 @@ class DetailCuti extends React.Component {
             depan,
             belakang,
             cuti.*,
-            julianday(cuti.akhir)-julianday(cuti.awal)+1 AS hari,
+            julianday(cuti.akhir)-julianday(cuti.awal) AS hari,
             (SELECT
-              5 - sum(julianday(cuti.akhir)-julianday(cuti.awal)+1) FROM
+              5 - sum(julianday(cuti.akhir)-julianday(cuti.awal)) FROM
                     pegawai JOIN cuti ON cuti.id_pegawai = pegawai.id
               WHERE pegawai.id = ?) AS sisa
         FROM
@@ -190,7 +190,8 @@ class DetailCuti extends React.Component {
         />
       );
     }
-    if (this.state.cuti) {
+
+    if (this.state.cuti.length !== 0) {
       tampilan = (
         <FlatList
           refreshControl={
