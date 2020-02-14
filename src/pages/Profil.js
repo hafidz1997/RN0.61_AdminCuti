@@ -104,13 +104,10 @@ class Profil extends React.Component {
 
   async notif() {
     // console.warn('notification');
+    let fcmToken = await AsyncStorage.getItem('fcmToken');
     const key = 'AIzaSyBSKD1SayfB8FRTtz07WM6soWEREfD__fg';
     const msg = {
-      registration_ids: [
-        'f4qPCSOjYMw:APA91bE2-5zQDez5gfOd3BJox-Y4l6BuUiNtUBcR3CgU8fLnsZTIljf-ZJxZ3P5Fb9an76xDhfpSSkXwt2-GUqoqRICcT7aHK5RhFEAymqRjgZb2RODwuI-P4Pq1R7XtXpkG4kSbVD6E',
-      ],
-      // to:
-      //   'f4qPCSOjYMw:APA91bE2-5zQDez5gfOd3BJox-Y4l6BuUiNtUBcR3CgU8fLnsZTIljf-ZJxZ3P5Fb9an76xDhfpSSkXwt2-GUqoqRICcT7aHK5RhFEAymqRjgZb2RODwuI-P4Pq1R7XtXpkG4kSbVD6E',
+      registration_ids: [fcmToken],
       notification: {
         title: 'Hello World!',
         body: 'My first notification!',
