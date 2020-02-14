@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "879805475447",
+    "firebase_url": "https://pushnotification-2cca7.firebaseio.com",
+    "project_id": "pushnotification-2cca7",
+    "storage_bucket": "pushnotification-2cca7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:879805475447:android:66f58a1632d03c3a697472",
+        "android_client_info": {
+          "package_name": "com.deptechmobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "879805475447-3c7ugkt9lc71jpgbd7bma80qgg66tbha.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOn5KauyUesl6yz_HF8ur-rSuh4zbnwo8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "879805475447-3c7ugkt9lc71jpgbd7bma80qgg66tbha.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

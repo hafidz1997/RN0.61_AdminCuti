@@ -2,10 +2,8 @@ import React from 'react';
 import {StyleSheet, View, Text, ScrollView, Alert, Image} from 'react-native';
 import HeaderDetail from '../components/HeaderDetail';
 import Button from '../components/Button';
-import {openDatabase} from 'react-native-sqlite-storage';
 import {ToastError, ToastSuccess} from '../helpers/function';
-
-let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
+import db from '../helpers/variable';
 
 class DetailAdmin extends React.Component {
   constructor(props) {

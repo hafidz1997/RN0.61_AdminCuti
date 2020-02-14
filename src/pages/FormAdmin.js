@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import HeaderDetail from '../components/HeaderDetail';
 import Button from '../components/Button';
-import {openDatabase} from 'react-native-sqlite-storage';
+
 import {ActionSheet, Root} from 'native-base';
 import ImagePicker from 'react-native-image-crop-picker';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -23,7 +23,7 @@ import {
   ToastEmpty,
 } from '../helpers/function';
 
-let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
+import db from '../helpers/variable';
 
 class FormAdmin extends ValidationComponent {
   constructor(props) {

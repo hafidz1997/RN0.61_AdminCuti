@@ -11,13 +11,12 @@ import HeaderDetail from '../components/HeaderDetail';
 import Button from '../components/Button';
 import DatePickers from '../components/DatePickers';
 
-import {openDatabase} from 'react-native-sqlite-storage';
 import DatePicker from 'react-native-datepicker';
 import moment from 'moment';
 import {ToastError, ToastSuccess, ToastEmpty} from '../helpers/function';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
+import db from '../helpers/variable';
 
 class FormCuti extends React.Component {
   constructor(props) {
@@ -32,7 +31,8 @@ class FormCuti extends React.Component {
       akhir: '',
       thisDay: new Date(),
       sisa: '',
-      show: false,
+      show1: false,
+      show2: false,
     };
     let id = this.props.navigation.getParam('id', 0);
     let idp = this.props.navigation.getParam('idp', 0);
@@ -113,8 +113,11 @@ class FormCuti extends React.Component {
     });
   }
 
-  showDatepicker = () => {
-    this.setState({show: true});
+  showDatepicker1 = () => {
+    this.setState({show1: true});
+  };
+  showDatepicker2 = () => {
+    this.setState({show2: true});
   };
 
   tambah = () => {
@@ -287,7 +290,7 @@ class FormCuti extends React.Component {
             <View>
               <TouchableOpacity
                 style={style.date}
-                onPress={this.showDatepicker.bind(this)}>
+                onPress={this.showDatepicker1.bind(this)}>
                 <Icon
                   style={style.icon}
                   name="md-calendar"
@@ -297,9 +300,8 @@ class FormCuti extends React.Component {
                 <Text>{txt}</Text>
               </TouchableOpacity>
             </View>
-            {this.state.show && (
+            {this.state.show1 && (
               <DatePickers
-                // date={this.state.awal}
                 value={val}
                 // min={this.state.thisDay}
                 onChange={(event, date) => {
@@ -315,7 +317,7 @@ class FormCuti extends React.Component {
             <View>
               <TouchableOpacity
                 style={style.date}
-                onPress={this.showDatepicker.bind(this)}>
+                onPress={this.showDatepicker2.bind(this)}>
                 <Icon
                   style={style.icon}
                   name="md-calendar"
@@ -325,9 +327,8 @@ class FormCuti extends React.Component {
                 <Text>{txt2}</Text>
               </TouchableOpacity>
             </View>
-            {this.state.show && (
+            {this.state.show2 && (
               <DatePickers
-                // date={this.state.akhir}
                 value={val2}
                 max={max}
                 // min={this.state.thisDay}

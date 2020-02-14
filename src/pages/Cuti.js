@@ -2,8 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Text, FlatList, RefreshControl} from 'react-native';
 import Header from '../components/Header';
 import List from '../components/List';
-import {openDatabase} from 'react-native-sqlite-storage';
-let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
+import db from '../helpers/variable';
 
 class Cuti extends React.Component {
   constructor(props) {

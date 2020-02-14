@@ -10,12 +10,12 @@ import {
 } from 'react-native';
 import HeaderDetail from '../components/HeaderDetail';
 import Button from '../components/Button';
-import {openDatabase} from 'react-native-sqlite-storage';
+
 import AddButton from '../components/AddButton';
 import List from '../components/List';
 import {ToastError, ToastSuccess} from '../helpers/function';
 
-let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
+import db from '../helpers/variable';
 
 class DetailCuti extends React.Component {
   constructor(props) {

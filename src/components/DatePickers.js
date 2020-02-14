@@ -24,6 +24,7 @@ const DatePickers = props => {
   } else if (!props.max && !props.min) {
     coba = (
       <DateTimePicker
+        // value={props.value}
         value={moment(props.value).toDate()}
         onChange={props.onChange}
       />

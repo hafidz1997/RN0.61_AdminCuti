@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, Text, ScrollView, TextInput} from 'react-native';
 import Button from '../components/Button';
-import {openDatabase} from 'react-native-sqlite-storage';
+
 import HeaderDetail from '../components/HeaderDetail';
 import {RadioButton} from 'react-native-paper';
 import ValidationComponent from 'react-native-form-validator';
@@ -13,7 +13,7 @@ import {
   ToastEmpty,
 } from '../helpers/function';
 
-let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
+import db from '../helpers/variable';
 
 class TambahPegawai extends ValidationComponent {
   constructor(props) {

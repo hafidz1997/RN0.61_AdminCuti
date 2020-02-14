@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, TextInput, View} from 'react-native';
 import Button from '../components/Button';
-import {openDatabase} from 'react-native-sqlite-storage';
+
 import AsyncStorage from '@react-native-community/async-storage';
 import CheckBox from '@react-native-community/checkbox';
 import ValidationComponent from 'react-native-form-validator';
@@ -12,7 +12,7 @@ import {
   ToastEmpty,
 } from '../helpers/function';
 
-let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
+import db from '../helpers/variable';
 
 class Login extends ValidationComponent {
   constructor(props) {

@@ -4,8 +4,8 @@ import Header from '../components/Header';
 import AddButton from '../components/AddButton';
 import List from '../components/List';
 import AsyncStorage from '@react-native-community/async-storage';
-import {openDatabase} from 'react-native-sqlite-storage';
-let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
+import db from '../helpers/variable';
+// import PushNotification from 'react-native-push-notification';
 
 class Admin extends React.Component {
   constructor(props) {
@@ -28,11 +28,18 @@ class Admin extends React.Component {
     this.focusListener = navigation.addListener('didFocus', () => {
       this.getAdmin();
     });
+    // this.pushNotification();
   }
 
   componentWillUnmount() {
     this.focusListener.remove();
   }
+
+  // async pushNotification() {
+  //   await PushNotification.configure({
+  //     onNotification: function(notification) {},
+  //   });
+  // }
 
   async getStorage() {
     const dt = await AsyncStorage.getItem('dt');
@@ -62,7 +69,7 @@ class Admin extends React.Component {
 
   render() {
     let tampilan;
-    if (this.state.admin.length !== 0) {
+    if (this.state.admin.length > 1) {
       tampilan = (
         <FlatList
           refreshControl={

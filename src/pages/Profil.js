@@ -11,10 +11,8 @@ import {
 import Header from '../components/Header';
 import Button from '../components/Button';
 import AsyncStorage from '@react-native-community/async-storage';
-import {openDatabase} from 'react-native-sqlite-storage';
 import {ToastError} from '../helpers/function';
-
-let db = openDatabase({name: 'deptech6.db', createFromLocation: 1});
+import db from '../helpers/variable';
 
 class Profil extends React.Component {
   constructor(props) {
